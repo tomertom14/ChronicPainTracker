@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  # The local PostgreSQL database container
+  db:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: tomer
+      POSTGRES_PASSWORD: localpassword123
+      POSTGRES_DB: chronic_pain_local_db
+    ports:
+      - "5432:5432"
+    volumes:
+      # This ensures data isn't lost if the container restarts
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

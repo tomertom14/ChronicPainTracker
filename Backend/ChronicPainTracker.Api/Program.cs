@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.EntityFrameworkCore;
+using ChronicPainTracker.Api.Data;
 
 namespace ChronicPainTracker.Api;
+
 
 public class Program
 {
@@ -12,6 +15,10 @@ public class Program
 
         // Add services to the container to support API controllers
         builder.Services.AddControllers();
+
+        // Register AppDbContext with PostgreSQL using the connection string from appsettings.json
+        builder.Services.AddDbContext<AppDbContext>(options =>
+            options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
         // Configure Swagger/OpenAPI for API documentation and testing
         builder.Services.AddEndpointsApiExplorer();
