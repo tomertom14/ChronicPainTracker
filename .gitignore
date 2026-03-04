@@ -1,0 +1,23 @@
+# =========================
+# Node.js & Angular (Frontend)
+# =========================
+node_modules/
+dist/
+.angular/
+.env
+
+# =========================
+# .NET & C# (Backend)
+# =========================
+[Bb]in/
+[Oo]bj/
+.vs/
+*.user
+appsettings.Development.json
+*.log
+
+# =========================
+# OS & Editors
+# =========================
+.DS_Store
+.vscode/
