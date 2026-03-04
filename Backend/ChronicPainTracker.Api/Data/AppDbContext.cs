@@ -14,4 +14,6 @@ public class AppDbContext : DbContext
     // This property represents the 'Emotions' table in the PostgreSQL database.
     // Entity Framework will use this to query and save instances of the Emotion model.
     public DbSet<Emotion> Emotions { get; set; }
+
+    public DbSet<User> Users { get; set; }
 }
