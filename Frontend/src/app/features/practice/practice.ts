@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { environment } from '../../../environments/environment';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 interface EmotionRate {
   name: string;
@@ -29,7 +31,6 @@ interface EmotionDetail {
   styleUrls: ['./practice.css']
 })
 export class PracticeComponent {
-  // We now have 3 steps: 1(Select), 2(Questions), 3(Cleansing)
   currentStep: number = 1;
 
   emotionsList: EmotionRate[] = [
@@ -52,7 +53,8 @@ export class PracticeComponent {
   newEmotion: string = '';
   emotionDetails: EmotionDetail[] = []; 
 
-  constructor(private router: Router) {}
+  // Injected HttpClient here
+  constructor(private router: Router, private http: HttpClient) {}
 
   addCustomEmotion(): void {
     const trimmed = this.newEmotion.trim();
@@ -84,11 +86,9 @@ export class PracticeComponent {
       this.currentStep++;
     } 
     else if (this.currentStep === 2) {
-      // Move to the final Cleansing step
       this.currentStep++;
     }
     else if (this.currentStep === 3) {
-      // Finalize and save!
       this.finishAndSave();
     }
   }
@@ -108,12 +108,44 @@ export class PracticeComponent {
     }
   }
 
-  finishAndSave(): void {
-    // Here we will eventually call the C# API to save to PostgreSQL
-    console.log('Data ready to save:', this.emotionDetails);
-    
-    // For now, just alert and go back to dashboard
-    alert('Practice complete! Your emotions have been processed and saved.');
-    this.router.navigate(['/dashboard']);
+finishAndSave(): void {
+    const allRatedEmotions = this.emotionsList
+      .filter(e => Number(e.intensity) > 0)
+      .map(e => {
+        const details = this.emotionDetails.find(d => d.emotion.name === e.name);
+        return {
+          name: e.name,
+          intensity: Number(e.intensity),
+          when: details?.answers.when || '',
+          whoWhat: details?.answers.whoWhat || '',
+          whereInBody: details?.answers.whereInBody || '',
+          physicalSensation: details?.answers.physicalSensation || '',
+          duration: details?.answers.duration || ''
+        };
+      });
+
+    const payload = { allEmotions: allRatedEmotions };
+    const apiUrl = `${environment.apiUrl}/practice`; 
+
+    // 1. Pull the token from localStorage (verify the key name matches what you used in login)
+    const token = localStorage.getItem('jwt_token'); 
+
+    // 2. Create the Authorization header
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+
+    // 3. Send the POST request WITH the headers attached
+    this.http.post(apiUrl, payload, { headers }).subscribe({
+      next: (response) => {
+        console.log('Successfully saved to DB:', response);
+        alert('Practice complete! Your emotions have been processed and saved.');
+        this.router.navigate(['/dashboard']);
+      },
+      error: (error) => {
+        console.error('Error saving practice:', error);
+        alert('There was a problem saving your practice. Check the console for details.');
+      }
+    });
   }
 }
