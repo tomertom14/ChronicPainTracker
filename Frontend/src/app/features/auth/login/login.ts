@@ -1,0 +1,44 @@
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { AuthService } from '../../../core/auth/auth.service';
+import { LoginRequest } from '../../../core/auth/auth.models';
+
+@Component({
+  selector: 'app-login',
+  standalone: true,
+  imports: [CommonModule, FormsModule],
+  templateUrl: './login.html',
+  styleUrls: ['./login.css']
+})
+export class LoginComponent {
+  credentials: LoginRequest = { username: '', password: '' };
+  errorMessage: string = '';
+  isLoading: boolean = false;
+
+  constructor(private authService: AuthService, private router: Router) {}
+
+  onSubmit(): void {
+    if (!this.credentials.username || !this.credentials.password) {
+      this.errorMessage = 'Please enter both username and password.';
+      return;
+    }
+
+    this.isLoading = true;
+    this.errorMessage = '';
+
+    this.authService.login(this.credentials).subscribe({
+      next: () => {
+        this.isLoading = false;
+        console.log('Login successful! Token saved.');
+        // this.router.navigate(['/dashboard']);
+      },
+      error: (err) => {
+        this.isLoading = false;
+        this.errorMessage = 'Invalid username or password.';
+        console.error('Login error:', err);
+      }
+    });
+  }
+}

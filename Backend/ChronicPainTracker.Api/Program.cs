@@ -45,6 +45,16 @@ public class Program
 
         builder.Services.AddAuthorization();
 
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("AllowAngularDev",
+                policy =>
+                {
+                    policy.WithOrigins("http://localhost:4200")
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                });
+        });
         var app = builder.Build();
 
         // Configure the HTTP request pipeline
@@ -55,11 +65,7 @@ public class Program
             app.UseSwaggerUI();
         }
 
-        // Redirect all HTTP requests to HTTPS for security
-        app.UseHttpsRedirection();
-
-        // Enable authorization middleware
-        app.UseAuthorization();
+        app.UseCors("AllowAngularDev");
 
         app.UseAuthentication();
         app.UseAuthorization();
