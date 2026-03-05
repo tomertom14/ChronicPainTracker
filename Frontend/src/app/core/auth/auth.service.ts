@@ -23,19 +23,26 @@ export class AuthService {
       tap(response => this.saveToken(response.token))
     );
   }
-
+  // --- Updated SSR-Safe Token Methods ---
   private saveToken(token: string): void {
-    localStorage.setItem(this.tokenKey, token);
+    // Check if we are running in the browser before using localStorage
+    if (typeof window !== 'undefined' && window.localStorage) {
+      localStorage.setItem(this.tokenKey, token);
+    }
   }
 
   getToken(): string | null {
-    return localStorage.getItem(this.tokenKey);
+    if (typeof window !== 'undefined' && window.localStorage) {
+      return localStorage.getItem(this.tokenKey);
+    }
+    return null; // Return null if we are on the server
   }
 
   logout(): void {
-    localStorage.removeItem(this.tokenKey);
+    if (typeof window !== 'undefined' && window.localStorage) {
+      localStorage.removeItem(this.tokenKey);
+    }
   }
-
   isLoggedIn(): boolean {
     const token = this.getToken();
     if (!token) return false;

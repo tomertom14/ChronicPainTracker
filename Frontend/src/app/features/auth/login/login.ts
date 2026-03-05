@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -17,7 +17,7 @@ export class LoginComponent {
   errorMessage: string = '';
   isLoading: boolean = false;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router, private cdr: ChangeDetectorRef) {}
 
   onSubmit(): void {
     if (!this.credentials.username || !this.credentials.password) {
@@ -32,12 +32,14 @@ export class LoginComponent {
       next: () => {
         this.isLoading = false;
         console.log('Login successful! Token saved.');
-        // this.router.navigate(['/dashboard']);
+        this.router.navigate(['/dashboard']);
       },
       error: (err) => {
         this.isLoading = false;
         this.errorMessage = 'Invalid username or password.';
         console.error('Login error:', err);
+        // Force Angular to refresh the UI immediately
+        this.cdr.detectChanges();
       }
     });
   }

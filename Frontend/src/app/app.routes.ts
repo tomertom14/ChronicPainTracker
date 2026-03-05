@@ -1,13 +1,19 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './features/auth/login/login';
+// Corrected import path without '.component'
+import { DashboardComponent } from './features/dashboard/dashboard';
+import { authGuard } from './core/guards/auth-guard';
 
 export const routes: Routes = [
-  // When the user navigates to /login, show the LoginComponent
   { path: 'login', component: LoginComponent },
   
-  // When the user navigates to the empty path (root), redirect to /login
-  { path: '', redirectTo: '/login', pathMatch: 'full' },
+  { 
+    path: 'dashboard', 
+    component: DashboardComponent,
+    canActivate: [authGuard] 
+  },
+  // Update the root redirect to point to the dashboard
+  { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
   
-  // Catch-all: If the user types a URL that doesn't exist, redirect to /login
   { path: '**', redirectTo: '/login' }
 ];
