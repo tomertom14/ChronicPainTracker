@@ -1,19 +1,20 @@
-import { inject } from '@angular/core';
-import { CanActivateFn, Router } from '@angular/router';
-// Adjust the path to your AuthService if necessary
+import { inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { CanActivateFn, Router, UrlTree } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
 
 export const authGuard: CanActivateFn = (route, state) => {
-  // We use inject() to get our services inside a functional guard
   const authService = inject(AuthService);
   const router = inject(Router);
+  const platformId = inject(PLATFORM_ID);
 
-  // Check if the user has a valid token
-  if (authService.isLoggedIn()) {
-    return true; // Access granted!
+  if (!isPlatformBrowser(platformId)) {
+    return true;
   }
 
-  // Instead of returning false, we return a UrlTree.
-  // This explicitly tells the Angular Router to redirect the user.
+  if (authService.isLoggedIn()) {
+    return true; 
+  }
+
   return router.createUrlTree(['/login']);
 };
