@@ -62,18 +62,22 @@ public class Program
 
         builder.Services.AddAuthorization();
 
+        var myAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
+        // 2. Add CORS services
         builder.Services.AddCors(options =>
         {
-            options.AddPolicy("AllowApp", // Renamed for general use
-                policy =>
-                {
-                    // Allow both local development and the future production URL
-                    policy.WithOrigins("http://localhost:4200", "https://chronic-pain-tracker.vercel.app")
-                          .AllowAnyHeader()
-                          .AllowAnyMethod();
-                });
+            options.AddPolicy(name: myAllowSpecificOrigins,
+                              policy =>
+                              {
+                                  policy.WithOrigins(
+                                      "http://localhost:4200", // For local testing
+                                      "https://chronic-pain-tracker-2m2826gcn-tomertom14s-projects.vercel.app" // Your Vercel URL
+                                  )
+                                  .AllowAnyHeader()
+                                  .AllowAnyMethod();
+                              });
         });
-
         var app = builder.Build();
 
         if (app.Environment.IsDevelopment())
