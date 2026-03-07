@@ -68,7 +68,7 @@ public class Program
                 policy =>
                 {
                     // Allow both local development and the future production URL
-                    policy.WithOrigins("http://localhost:4200", "https://your-future-angular-app.vercel.app")
+                    policy.WithOrigins("http://localhost:4200", "https://chronic-pain-tracker.vercel.app")
                           .AllowAnyHeader()
                           .AllowAnyMethod();
                 });
