@@ -18,23 +18,14 @@ public class Program
 
         builder.Services.AddControllers();
 
-        // --- Database Configuration (Updated for Deployment) ---
-        var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
-
-        if (string.IsNullOrEmpty(connectionString))
-        {
-            connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-        }
-        else if (connectionString.StartsWith("postgres://"))
-        {
-            var uri = new Uri(connectionString);
-            var db = uri.AbsolutePath.Trim('/');
-            var userPass = uri.UserInfo.Split(':');
-            connectionString = $"Host={uri.Host};Database={db};Username={userPass[0]};Password={userPass[1]};SSL Mode=Require;Trust Server Certificate=true;";
-        }
+        // --- Direct Database Configuration ---
+        // Get the string from Environment Variable (Render) or local config
+        var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL")
+                               ?? builder.Configuration.GetConnectionString("DefaultConnection");
 
         builder.Services.AddDbContext<AppDbContext>(options =>
             options.UseNpgsql(connectionString));
+        // --------------------------------------
 
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
@@ -56,24 +47,22 @@ public class Program
 
         builder.Services.AddAuthorization();
 
-        // --- CORS Configuration ---
-        // Unified the policy name to prevent 'AllowApp' vs '_myAllowSpecificOrigins' mismatch
+        // --- CORS ---
         var corsPolicyName = "AllowVercelApp";
-
         builder.Services.AddCors(options =>
         {
             options.AddPolicy(name: corsPolicyName,
-                              policy =>
-                              {
-                                  policy.WithOrigins(
-                                      "http://localhost:4200",
-                                      "https://chronic-pain-tracker.vercel.app",
-                                      "https://chronic-pain-tracker-2m2826gcn-tomertom14s-projects.vercel.app"
-                                  )
-                                  .AllowAnyHeader()
-                                  .AllowAnyMethod()
-                                  .AllowCredentials();
-                              });
+                policy =>
+                {
+                    policy.WithOrigins(
+                        "http://localhost:4200",
+                        "https://chronic-pain-tracker.vercel.app",
+                        "https://chronic-pain-tracker-2m2826gcn-tomertom14s-projects.vercel.app"
+                    )
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowCredentials();
+                });
         });
 
         var app = builder.Build();
@@ -84,14 +73,10 @@ public class Program
             app.UseSwaggerUI();
         }
 
-        // Middleware order is critical: Routing -> CORS -> Auth
         app.UseRouting();
-
         app.UseCors(corsPolicyName);
-
         app.UseAuthentication();
         app.UseAuthorization();
-
         app.MapControllers();
 
         app.Run();
