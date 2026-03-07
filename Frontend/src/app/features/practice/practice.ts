@@ -32,6 +32,7 @@ interface EmotionDetail {
 })
 export class PracticeComponent {
   currentStep: number = 1;
+  isSaving: boolean = false;
 
   emotionsList: EmotionRate[] = [
     { name: 'Anger', intensity: 0 },
@@ -109,6 +110,12 @@ export class PracticeComponent {
   }
 
 finishAndSave(): void {
+    // 1. Block any further clicks if already saving
+    if (this.isSaving) return;
+    
+    // 2. Lock the button immediately
+    this.isSaving = true;
+
     const allRatedEmotions = this.emotionsList
       .filter(e => Number(e.intensity) > 0)
       .map(e => {
@@ -126,24 +133,26 @@ finishAndSave(): void {
 
     const payload = { allEmotions: allRatedEmotions };
     const apiUrl = `${environment.apiUrl}/practice`; 
-
-    // 1. Pull the token from localStorage (verify the key name matches what you used in login)
     const token = localStorage.getItem('jwt_token'); 
 
-    // 2. Create the Authorization header
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
 
-    // 3. Send the POST request WITH the headers attached
     this.http.post(apiUrl, payload, { headers }).subscribe({
       next: (response) => {
         console.log('Successfully saved to DB:', response);
         alert('Practice complete! Your emotions have been processed and saved.');
+        
+        // Unlock button and navigate
+        this.isSaving = false;
         this.router.navigate(['/dashboard']);
       },
       error: (error) => {
         console.error('Error saving practice:', error);
+        
+        // Important: Unlock the button so the user can try again if there was a network error
+        this.isSaving = false;
         alert('There was a problem saving your practice. Check the console for details.');
       }
     });
