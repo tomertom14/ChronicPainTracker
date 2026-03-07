@@ -6,10 +6,9 @@ using ChronicPainTracker.Api.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-
+using System; // Added for Environment
 
 namespace ChronicPainTracker.Api;
-
 
 public class Program
 {
@@ -17,14 +16,32 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        // Add services to the container to support API controllers
         builder.Services.AddControllers();
 
-        // Register AppDbContext with PostgreSQL using the connection string from appsettings.json
-        builder.Services.AddDbContext<AppDbContext>(options =>
-            options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+        // --- Database Configuration (Updated for Deployment) ---
+        var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
 
-        // Configure Swagger/OpenAPI for API documentation and testing
+        if (string.IsNullOrEmpty(connectionString))
+        {
+            // If DATABASE_URL is not set, use local appsettings.json
+            connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+        }
+        else
+        {
+            // If it's a "postgres://" URL (like from Neon), convert it to Npgsql format
+            if (connectionString.StartsWith("postgres://"))
+            {
+                var uri = new Uri(connectionString);
+                var db = uri.AbsolutePath.Trim('/');
+                var userPass = uri.UserInfo.Split(':');
+                connectionString = $"Host={uri.Host};Database={db};Username={userPass[0]};Password={userPass[1]};SSL Mode=Require;Trust Server Certificate=true;";
+            }
+        }
+
+        builder.Services.AddDbContext<AppDbContext>(options =>
+            options.UseNpgsql(connectionString));
+        // -------------------------------------------------------
+
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
@@ -47,30 +64,29 @@ public class Program
 
         builder.Services.AddCors(options =>
         {
-            options.AddPolicy("AllowAngularDev",
+            options.AddPolicy("AllowApp", // Renamed for general use
                 policy =>
                 {
-                    policy.WithOrigins("http://localhost:4200")
+                    // Allow both local development and the future production URL
+                    policy.WithOrigins("http://localhost:4200", "https://your-future-angular-app.vercel.app")
                           .AllowAnyHeader()
                           .AllowAnyMethod();
                 });
         });
+
         var app = builder.Build();
 
-        // Configure the HTTP request pipeline
         if (app.Environment.IsDevelopment())
         {
-            // Enable Swagger UI only in development environment
             app.UseSwagger();
             app.UseSwaggerUI();
         }
 
-        app.UseCors("AllowAngularDev");
+        app.UseCors("AllowApp");
 
         app.UseAuthentication();
         app.UseAuthorization();
 
-        // Map the controller routes to the request pipeline
         app.MapControllers();
 
         app.Run();
