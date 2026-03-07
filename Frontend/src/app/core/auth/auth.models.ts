@@ -8,3 +8,8 @@ export interface LoginRequest {
 export interface AuthResponse {
   token: string;
 }
+
+export interface RegisterRequest {
+  username: string;
+  password: string;
+}
