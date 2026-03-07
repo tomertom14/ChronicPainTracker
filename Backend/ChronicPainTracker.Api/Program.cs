@@ -6,7 +6,7 @@ using ChronicPainTracker.Api.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using System; // Added for Environment
+using System;
 
 namespace ChronicPainTracker.Api;
 
@@ -23,24 +23,18 @@ public class Program
 
         if (string.IsNullOrEmpty(connectionString))
         {
-            // If DATABASE_URL is not set, use local appsettings.json
             connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
         }
-        else
+        else if (connectionString.StartsWith("postgres://"))
         {
-            // If it's a "postgres://" URL (like from Neon), convert it to Npgsql format
-            if (connectionString.StartsWith("postgres://"))
-            {
-                var uri = new Uri(connectionString);
-                var db = uri.AbsolutePath.Trim('/');
-                var userPass = uri.UserInfo.Split(':');
-                connectionString = $"Host={uri.Host};Database={db};Username={userPass[0]};Password={userPass[1]};SSL Mode=Require;Trust Server Certificate=true;";
-            }
+            var uri = new Uri(connectionString);
+            var db = uri.AbsolutePath.Trim('/');
+            var userPass = uri.UserInfo.Split(':');
+            connectionString = $"Host={uri.Host};Database={db};Username={userPass[0]};Password={userPass[1]};SSL Mode=Require;Trust Server Certificate=true;";
         }
 
         builder.Services.AddDbContext<AppDbContext>(options =>
             options.UseNpgsql(connectionString));
-        // -------------------------------------------------------
 
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
@@ -62,22 +56,26 @@ public class Program
 
         builder.Services.AddAuthorization();
 
-        var myAllowSpecificOrigins = "_myAllowSpecificOrigins";
+        // --- CORS Configuration ---
+        // Unified the policy name to prevent 'AllowApp' vs '_myAllowSpecificOrigins' mismatch
+        var corsPolicyName = "AllowVercelApp";
 
-        // 2. Add CORS services
         builder.Services.AddCors(options =>
         {
-            options.AddPolicy(name: myAllowSpecificOrigins,
+            options.AddPolicy(name: corsPolicyName,
                               policy =>
                               {
                                   policy.WithOrigins(
-                                      "http://localhost:4200", // For local testing
-                                      "https://chronic-pain-tracker-2m2826gcn-tomertom14s-projects.vercel.app" // Your Vercel URL
+                                      "http://localhost:4200",
+                                      "https://chronic-pain-tracker.vercel.app",
+                                      "https://chronic-pain-tracker-2m2826gcn-tomertom14s-projects.vercel.app"
                                   )
                                   .AllowAnyHeader()
-                                  .AllowAnyMethod();
+                                  .AllowAnyMethod()
+                                  .AllowCredentials();
                               });
         });
+
         var app = builder.Build();
 
         if (app.Environment.IsDevelopment())
@@ -86,7 +84,10 @@ public class Program
             app.UseSwaggerUI();
         }
 
-        app.UseCors("AllowApp");
+        // Middleware order is critical: Routing -> CORS -> Auth
+        app.UseRouting();
+
+        app.UseCors(corsPolicyName);
 
         app.UseAuthentication();
         app.UseAuthorization();
