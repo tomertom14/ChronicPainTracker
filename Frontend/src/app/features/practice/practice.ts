@@ -33,6 +33,7 @@ interface EmotionDetail {
 export class PracticeComponent {
   currentStep: number = 1;
   isSaving: boolean = false;
+  isReleasing: boolean = false;
 
   emotionsList: EmotionRate[] = [
     { name: 'Anger', intensity: 0 },
@@ -110,11 +111,11 @@ export class PracticeComponent {
   }
 
 finishAndSave(): void {
-    // 1. Block any further clicks if already saving
     if (this.isSaving) return;
-    
-    // 2. Lock the button immediately
+
+    // Lock the button and start the full-screen release animation
     this.isSaving = true;
+    this.isReleasing = true;
 
     const allRatedEmotions = this.emotionsList
       .filter(e => Number(e.intensity) > 0)
@@ -139,22 +140,30 @@ finishAndSave(): void {
       'Authorization': `Bearer ${token}`
     });
 
-    this.http.post(apiUrl, payload, { headers }).subscribe({
-      next: (response) => {
-        console.log('Successfully saved to DB:', response);
-        alert('Practice complete! Your emotions have been processed and saved.');
-        
-        // Unlock button and navigate
-        this.isSaving = false;
-        this.router.navigate(['/dashboard']);
-      },
-      error: (error) => {
-        console.error('Error saving practice:', error);
-        
-        // Important: Unlock the button so the user can try again if there was a network error
-        this.isSaving = false;
-        alert('There was a problem saving your practice. Check the console for details.');
-      }
+    // 1. Create a promise that just waits for 3.5 seconds (for the animation to play)
+    const minimumAnimationTime = new Promise(resolve => setTimeout(resolve, 3500));
+
+    // 2. Create a promise for the actual HTTP call to C#
+    const saveToServer = new Promise((resolve, reject) => {
+      this.http.post(apiUrl, payload, { headers }).subscribe({
+        next: (response) => resolve(response),
+        error: (error) => reject(error)
+      });
     });
+
+    // 3. Wait for BOTH the animation time AND the server response to finish
+    Promise.all([saveToServer, minimumAnimationTime])
+      .then(() => {
+        console.log('Practice silently saved to DB and animation completed.');
+        this.isSaving = false;
+        this.isReleasing = false;
+        this.router.navigate(['/dashboard']);
+      })
+      .catch((error) => {
+        console.error('Error saving practice:', error);
+        this.isSaving = false;
+        this.isReleasing = false;
+        alert('There was a slight problem releasing your practice. Please try again.');
+      });
   }
 }
