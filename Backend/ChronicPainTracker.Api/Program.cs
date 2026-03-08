@@ -80,6 +80,23 @@ public class Program
         app.UseAuthorization();
         app.MapControllers();
 
+        app.MapGet("/api/health", async (AppDbContext dbContext) => 
+            {
+                try 
+                {
+                    bool isDbConnected = await dbContext.Database.CanConnectAsync();
+                    if (isDbConnected)
+                    {
+                        return Results.Ok(new { status = "Awake", database = "Connected" });
+                    }
+                    return Results.StatusCode(500);
+                }
+                catch (Exception)
+                {
+                    return Results.StatusCode(500);
+                }
+            });
+
         app.Run();
     }
 }

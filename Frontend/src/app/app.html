@@ -1,1 +1,5 @@
-<router-outlet></router-outlet>
+@if (warmupService.isWakingServer()) {
+  <app-startup-loader></app-startup-loader>
+} @else {
+  <router-outlet></router-outlet>
+}

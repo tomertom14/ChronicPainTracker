@@ -78,4 +78,6 @@ export class AuthService {
   const url = `${this.apiUrl}/confirm-email?email=${encodeURIComponent(email)}&token=${encodeURIComponent(token)}`;
   return this.http.get(url);
   }
+
+  
 }
