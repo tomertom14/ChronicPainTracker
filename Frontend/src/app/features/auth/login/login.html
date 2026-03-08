@@ -1,65 +1,55 @@
-<div class="min-h-screen bg-slate-950 flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans">
-  <div class="sm:mx-auto sm:w-full sm:max-w-md">
-    <div class="flex justify-center text-emerald-500 mb-4">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-      </svg>
-    </div>
-    <h2 class="text-center text-3xl font-extrabold tracking-tight text-emerald-50">
-      Welcome Back
-    </h2>
-    <p class="mt-2 text-center text-sm text-emerald-200/60">
-      Sign in to manage your practice
-    </p>
-  </div>
+<div class="min-h-screen bg-gradient-to-br from-emerald-100 via-teal-100 to-stone-100 flex flex-col items-center justify-center font-sans p-6 animate-fade-in relative selection:bg-emerald-300/60">
+  
+  <div class="w-full max-w-md bg-white rounded-[2.5rem] p-8 md:p-12 shadow-[0_15px_40px_rgb(0,0,0,0.06)] border border-emerald-100 relative overflow-hidden transition-all duration-500 z-10">
+    
+    <div class="absolute top-0 left-0 -ml-16 -mt-16 w-48 h-48 rounded-full bg-emerald-100/70 blur-3xl -z-10"></div>
+    <div class="absolute bottom-0 right-0 -mr-16 -mb-16 w-40 h-40 rounded-full bg-teal-100/70 blur-3xl -z-10"></div>
 
-  <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-    <div class="bg-slate-900 py-8 px-4 shadow-2xl sm:rounded-xl sm:px-10 border border-emerald-900/30">
-      <form class="space-y-6" (ngSubmit)="onSubmit()">
-        
-        <div>
-          <label for="username" class="block text-sm font-medium text-emerald-100">Username</label>
-          <div class="mt-1">
-            <input id="username" name="username" type="text" [(ngModel)]="credentials.username" required 
-              class="block w-full appearance-none rounded-md border border-slate-700 bg-slate-800 px-3 py-2 text-emerald-50 placeholder-slate-400 focus:border-emerald-500 focus:outline-none focus:ring-emerald-500 sm:text-sm transition-colors duration-200">
-          </div>
-        </div>
-
-        <div>
-          <label for="password" class="block text-sm font-medium text-emerald-100">Password</label>
-          <div class="mt-1">
-            <input id="password" name="password" type="password" [(ngModel)]="credentials.password" required 
-              class="block w-full appearance-none rounded-md border border-slate-700 bg-slate-800 px-3 py-2 text-emerald-50 placeholder-slate-400 focus:border-emerald-500 focus:outline-none focus:ring-emerald-500 sm:text-sm transition-colors duration-200">
-          </div>
-        </div>
-
-        @if (errorMessage) {
-          <div class="text-red-400 text-sm text-center bg-red-900/20 py-2 rounded-md border border-red-900/50">
-            {{ errorMessage }}
-          </div>
-        }
-
-        <div>
-          <button type="submit" [disabled]="isLoading" 
-            class="flex w-full justify-center rounded-md border border-transparent bg-emerald-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-slate-900 disabled:opacity-50 transition-all duration-200">
-            @if (isLoading) {
-              Signing in...
-            } @else {
-              Sign in
-            }
-          </button>
-        </div>
-      </form>
-
-      <div class="mt-6 text-center border-t border-slate-800 pt-6">
-        <p class="text-sm text-slate-400">
-          New here? 
-          <a [routerLink]="['/register']" class="font-medium text-emerald-400 hover:text-emerald-300 transition-colors cursor-pointer">
-            Create a new account
-          </a>
-        </p>
+    <div class="text-center mb-8">
+      <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-emerald-200 to-teal-100 rounded-3xl text-emerald-700 shadow-md border border-emerald-200 mb-6">
+        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+        </svg>
       </div>
-      
+      <h2 class="text-3xl md:text-4xl font-extrabold text-emerald-950 tracking-tight mb-2">Welcome Back</h2>
+      <p class="text-emerald-900/70 font-medium">Please enter your details to sign in.</p>
     </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-5 relative z-10">
+      
+      @if (errorMessage) {
+        <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-xl text-red-700 text-sm font-medium shadow-sm">
+          {{ errorMessage }}
+        </div>
+      }
+
+      <div class="space-y-1.5">
+        <label for="username" class="block text-sm font-bold text-emerald-900 ml-1">Username</label>
+        <input id="username" type="text" formControlName="username" placeholder="Enter username" 
+               class="w-full px-5 py-3.5 bg-white border border-emerald-200 rounded-2xl text-emerald-950 placeholder-emerald-300 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-300" />
+      </div>
+
+      <div class="space-y-1.5">
+        <label for="password" class="block text-sm font-bold text-emerald-900 ml-1">Password</label>
+        <input id="password" type="password" formControlName="password" placeholder="Enter password" 
+               class="w-full px-5 py-3.5 bg-white border border-emerald-200 rounded-2xl text-emerald-950 placeholder-emerald-300 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-300" />
+      </div>
+
+      <div class="pt-4">
+        <button type="submit" [disabled]="loginForm.invalid || isLoading" 
+                class="w-full inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-white transition-all duration-300 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-2xl hover:from-emerald-600 hover:to-teal-600 focus:outline-none focus:ring-4 focus:ring-offset-2 focus:ring-emerald-400 shadow-lg shadow-emerald-500/30 hover:shadow-xl hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed">
+          @if (isLoading) {
+            Signing in...
+          } @else {
+            Sign In
+          }
+        </button>
+      </div>
+
+      <p class="text-center text-emerald-900/70 text-sm font-medium mt-6">
+        Don't have an account? 
+        <a routerLink="/register" class="text-emerald-600 font-bold hover:text-emerald-800 transition-colors hover:underline decoration-2 underline-offset-4">Create one</a>
+      </p>
+    </form>
   </div>
 </div>

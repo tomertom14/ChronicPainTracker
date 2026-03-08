@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 import { LoginComponent } from './features/auth/login/login';
 import { RegisterComponent } from './features/auth/register/register';
 import { DashboardComponent } from './features/dashboard/dashboard';
-
+import { VerifyEmailComponent } from './features/auth/verify-email/verify-email';
 import { PracticeComponent } from './features/practice/practice';
 import { authGuard } from './core/guards/auth-guard'; 
 
@@ -11,7 +11,7 @@ export const routes: Routes = [
   { path: 'register', component:  RegisterComponent},
   { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] },
   
-  
+  { path: 'verify-email', component: VerifyEmailComponent },
   { path: 'practice', component: PracticeComponent, canActivate: [authGuard] },
   
   { path: '', redirectTo: '/dashboard', pathMatch: 'full' },

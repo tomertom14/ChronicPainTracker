@@ -12,13 +12,22 @@ import { DAILY_PROMPTS } from './prompts.data';
   styleUrls: ['./dashboard.css']
 })
 export class DashboardComponent implements OnInit {
-  userName: string = 'Tomer';
+  // Default fallback name
+  userName: string = 'Guest'; 
   greeting: string = '';
   dailyPrompt: string = '';
 
   constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit(): void {
+    // Fetch the real username from the token
+    const fetchedName = this.authService.getCurrentUsername();
+    
+    if (fetchedName) {
+      this.userName = fetchedName;
+    }
+
+    // Call these after updating the userName
     this.setGreeting();
     this.setDailyPrompt();
   }

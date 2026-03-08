@@ -1,50 +1,49 @@
-import { Component, ChangeDetectorRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Component } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../core/auth/auth.service';
-import { LoginRequest } from '../../../core/auth/auth.models';
-import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [
-    FormsModule,
-    RouterLink
+    ReactiveFormsModule,
+    RouterModule
   ],
-  templateUrl: './login.html',
-  styleUrls: ['./login.css']
+  templateUrl: './login.html'
 })
 export class LoginComponent {
-  credentials: LoginRequest = { username: '', password: '' };
+  loginForm: FormGroup;
   errorMessage: string = '';
   isLoading: boolean = false;
 
-  constructor(private authService: AuthService, private router: Router, private cdr: ChangeDetectorRef) {}
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private router: Router
+  ) {
+    this.loginForm = this.fb.group({
+      username: ['', Validators.required],
+      password: ['', Validators.required]
+    });
+  }
 
   onSubmit(): void {
-    if (!this.credentials.username || !this.credentials.password) {
-      this.errorMessage = 'Please enter both username and password.';
-      return;
+    if (this.loginForm.valid) {
+      this.isLoading = true;
+      this.errorMessage = '';
+
+      this.authService.login(this.loginForm.value).subscribe({
+        next: () => {
+          this.isLoading = false;
+          this.router.navigate(['/dashboard']);
+        },
+        error: (err) => {
+          this.isLoading = false;
+          // This will properly catch the "Please confirm your email" message from the backend
+          this.errorMessage = err.error?.message || err.error || 'Invalid username or password.';
+        }
+      });
     }
-
-    this.isLoading = true;
-    this.errorMessage = '';
-
-    this.authService.login(this.credentials).subscribe({
-      next: () => {
-        this.isLoading = false;
-        console.log('Login successful! Token saved.');
-        this.router.navigate(['/dashboard']);
-      },
-      error: (err) => {
-        this.isLoading = false;
-        this.errorMessage = 'Invalid username or password.';
-        console.error('Login error:', err);
-        // Force Angular to refresh the UI immediately
-        this.cdr.detectChanges();
-      }
-    });
   }
 }

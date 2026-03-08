@@ -23,7 +23,7 @@ export class AuthService {
       tap(response => this.saveToken(response.token))
     );
   }
-  // --- Updated SSR-Safe Token Methods ---
+
   private saveToken(token: string): void {
     // Check if we are running in the browser before using localStorage
     if (typeof window !== 'undefined' && window.localStorage) {
@@ -43,6 +43,7 @@ export class AuthService {
       localStorage.removeItem(this.tokenKey);
     }
   }
+
   isLoggedIn(): boolean {
     const token = this.getToken();
     if (!token) return false;
@@ -54,5 +55,27 @@ export class AuthService {
     } catch(Error) {
       return false;
     }
+  }
+
+  getCurrentUsername(): string | null {
+    const token = this.getToken();
+    if (!token) return null;
+
+    try {
+      const decodedToken: any = jwtDecode(token);
+      
+      const dotNetNameClaim = 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name';
+      
+      // Return the username, checking multiple possible keys just in case
+      return decodedToken[dotNetNameClaim] || decodedToken.name || decodedToken.unique_name || null;
+    } catch(error) {
+      return null;
+    }
+  }
+
+  confirmEmail(email: string, token: string): Observable<any> {
+  // We use encodeURIComponent to safely handle special characters in tokens
+  const url = `${this.apiUrl}/confirm-email?email=${encodeURIComponent(email)}&token=${encodeURIComponent(token)}`;
+  return this.http.get(url);
   }
 }

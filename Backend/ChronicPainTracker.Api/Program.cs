@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System;
-
+using ChronicPainTracker.Api.Services;
 namespace ChronicPainTracker.Api;
 
 public class Program
@@ -46,7 +46,7 @@ public class Program
             });
 
         builder.Services.AddAuthorization();
-
+        builder.Services.AddScoped<IEmailService, EmailService>();
         // --- CORS ---
         var corsPolicyName = "AllowVercelApp";
         builder.Services.AddCors(options =>
