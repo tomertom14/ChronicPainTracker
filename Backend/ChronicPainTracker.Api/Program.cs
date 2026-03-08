@@ -47,6 +47,7 @@ public class Program
 
         builder.Services.AddAuthorization();
         builder.Services.AddScoped<IEmailService, EmailService>();
+        builder.Services.AddHttpClient();
         // --- CORS ---
         var corsPolicyName = "AllowVercelApp";
         builder.Services.AddCors(options =>

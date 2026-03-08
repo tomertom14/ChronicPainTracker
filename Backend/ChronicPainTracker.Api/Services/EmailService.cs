@@ -1,51 +1,44 @@
-﻿using MailKit.Net.Smtp;
-using MailKit.Security;
-using MimeKit;
+﻿using System.Net.Http.Json;
 
 namespace ChronicPainTracker.Api.Services;
 
 public class EmailService : IEmailService
 {
     private readonly IConfiguration _configuration;
+    private readonly HttpClient _httpClient;
 
-    public EmailService(IConfiguration configuration)
+    public EmailService(IConfiguration configuration, HttpClient httpClient)
     {
         _configuration = configuration;
+        _httpClient = httpClient;
     }
 
     public async Task SendEmailAsync(string to, string subject, string body)
     {
-        var smtpUser = _configuration["Brevo:SmtpUser"];
-        var smtpPass = _configuration["Brevo:SmtpPass"];
+        var apiKey = _configuration["Brevo:ApiKey"];
 
-        // Failsafe: Check if configuration is actually loaded
-        if (string.IsNullOrEmpty(smtpUser) || string.IsNullOrEmpty(smtpPass))
+        if (string.IsNullOrEmpty(apiKey))
         {
-            throw new Exception("SMTP credentials are missing. Please check your appsettings.Development.json file.");
+            throw new Exception("Brevo API key is missing.");
         }
 
-        var email = new MimeMessage();
+        _httpClient.DefaultRequestHeaders.Clear();
+        _httpClient.DefaultRequestHeaders.Add("api-key", apiKey);
 
-        // IMPORTANT: Replace with your actual verified Brevo email
-        email.From.Add(new MailboxAddress("Chronic Pain Tracker", "tomertom14@gmail.com"));
-        email.To.Add(MailboxAddress.Parse(to));
-        email.Subject = subject;
-
-        var builder = new BodyBuilder { HtmlBody = body };
-        email.Body = builder.ToMessageBody();
-
-        using var smtp = new SmtpClient();
-
-        try
+        var payload = new
         {
-            // Connect using STARTTLS on port 587
-            await smtp.ConnectAsync("smtp-relay.brevo.com", 587, SecureSocketOptions.StartTls);
-            await smtp.AuthenticateAsync(smtpUser, smtpPass);
-            await smtp.SendAsync(email);
-        }
-        finally
+            sender = new { name = "Chronic Pain Tracker", email = "tomertom14@gmail.com" },
+            to = new[] { new { email = to } },
+            subject = subject,
+            htmlContent = body
+        };
+
+        var response = await _httpClient.PostAsJsonAsync("https://api.brevo.com/v3/smtp/email", payload);
+
+        if (!response.IsSuccessStatusCode)
         {
-            await smtp.DisconnectAsync(true);
+            var error = await response.Content.ReadAsStringAsync();
+            throw new Exception($"Brevo API Error: {error}");
         }
     }
 }
