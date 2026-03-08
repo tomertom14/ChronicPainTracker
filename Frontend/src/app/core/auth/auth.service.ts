@@ -79,5 +79,14 @@ export class AuthService {
   return this.http.get(url);
   }
 
-  
+  googleLogin(token: string): Observable<AuthResponse> {
+    // Calling the /Auth/google endpoint
+    return this.http.post<AuthResponse>(`${this.apiUrl}/google`, { token }).pipe(
+      tap(response => {
+        if (response && response.token) {
+          this.saveToken(response.token);
+        }
+      })
+    );
+  }
 }

@@ -3,11 +3,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using ChronicPainTracker.Api.Data;
 using ChronicPainTracker.Api.Models;
-using ChronicPainTracker.Api.Services; // Make sure this matches your namespace
+using ChronicPainTracker.Api.Services; 
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System;
+using Google.Apis.Auth;
 
 namespace ChronicPainTracker.Api.Controllers;
 
@@ -93,7 +94,7 @@ public class AuthController : ControllerBase
         return Ok(new { token });
     }
 
-    // --- NEW: Endpoint to confirm the email ---
+
     [HttpGet("confirm-email")]
     public async Task<IActionResult> ConfirmEmail([FromQuery] string email, [FromQuery] string token)
     {
@@ -131,6 +132,51 @@ public class AuthController : ControllerBase
         );
 
         return new JwtSecurityTokenHandler().WriteToken(token);
+    }
+
+    
+   [HttpPost("google")]
+    public async Task<IActionResult> GoogleLogin([FromBody] GoogleAuthRequest request)
+    {
+        try
+        {
+            var settings = new GoogleJsonWebSignature.ValidationSettings()
+            {
+                // Updated _config to _configuration to match your controller
+                Audience = new List<string>() { _configuration["GoogleAuth:ClientId"]! }
+            };
+
+            var payload = await GoogleJsonWebSignature.ValidateAsync(request.Token, settings);
+
+            // Updated _dbContext to _context to match your controller
+            var user = _context.Users.FirstOrDefault(u => u.Email == payload.Email);
+
+            if (user == null)
+            {
+                user = new User
+                {
+                    Email = payload.Email,
+                    Username = payload.Name ?? payload.Email.Split('@')[0],
+                    PasswordHash = "", // Provide an empty string or dummy hash if your DB requires this field
+                    IsEmailConfirmed = true // Updated to match your User model
+                };
+                
+                _context.Users.Add(user);
+                await _context.SaveChangesAsync();
+            }
+
+            var jwtToken = CreateToken(user); 
+
+            return Ok(new { token = jwtToken }); 
+        }
+        catch (InvalidJwtException)
+        {
+            return BadRequest(new { message = "Invalid Google token." });
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, new { message = "An error occurred during Google authentication." });
+        }
     }
 }
 // Simple DTO for receiving data
