@@ -4,17 +4,18 @@
     
     <div class="sticky top-0 z-30 w-full bg-white border-b border-emerald-100 md:border-none md:bg-transparent">
       <div class="h-2 w-full bg-emerald-100 md:rounded-t-[2.5rem]">
-        <div class="h-2 bg-gradient-to-r from-emerald-500 to-teal-500 transition-all duration-500 ease-out md:rounded-tl-[2.5rem]" [style.width.%]="(currentStep / 3) * 100"></div>
+        <div class="h-2 bg-gradient-to-r from-emerald-500 to-teal-500 transition-all duration-500 ease-out md:rounded-tl-[2.5rem]" 
+             [style.width.%]="progressWidth()"></div>
       </div>
       <div class="px-6 md:px-10 py-5 flex justify-between items-center">
-        <span class="text-sm md:text-base font-bold text-emerald-950/50 uppercase tracking-widest">Step {{ currentStep }} of 3</span>
+        <span class="text-sm md:text-base font-bold text-emerald-950/50 uppercase tracking-widest">Step {{ currentStep() }} of 3</span>
         <button (click)="cancelPractice()" class="text-sm md:text-base font-bold text-emerald-700/70 hover:text-rose-600 transition-colors">Close</button>
       </div>
     </div>
 
     <div class="flex-1 overflow-y-auto p-6 md:p-10 md:px-16 pb-40 md:pb-48">
       
-      @if (currentStep === 1) {
+      @if (currentStep() === 1) {
         <div class="animate-fade-in max-w-3xl mx-auto space-y-10">
           <div class="text-center md:text-left">
             <h1 class="text-4xl md:text-5xl font-extrabold text-emerald-950 tracking-tighter mb-3 drop-shadow-sm">How are you feeling?</h1>
@@ -22,13 +23,13 @@
           </div>
 
           <div class="flex gap-4 p-3 bg-white rounded-2xl border border-emerald-100 shadow-sm">
-            <input type="text" [(ngModel)]="newEmotion" placeholder="Add custom emotion..." 
+            <input type="text" [ngModel]="newEmotion()" (ngModelChange)="newEmotion.set($event)" placeholder="Add custom emotion..." 
                    class="flex-1 px-5 py-4 text-base bg-emerald-50/50 border border-emerald-100 rounded-xl focus:ring-2 focus:ring-emerald-400 outline-none transition-all placeholder:text-emerald-900/30 text-emerald-950">
             <button (click)="addCustomEmotion()" class="px-8 py-4 bg-emerald-600 text-white font-bold rounded-xl active:bg-emerald-700 hover:bg-emerald-700 transition-colors shadow-md">Add</button>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-            @for (item of emotionsList; track item.name) {
+            @for (item of emotionsList(); track item.name) {
               <div class="p-5 rounded-3xl border transition-all duration-300"
                    [ngClass]="item.intensity > 0 ? 'bg-emerald-950 border-emerald-900 shadow-xl' : 'bg-white border-emerald-100 shadow-sm'">
                 <div class="flex justify-between items-center mb-5">
@@ -45,7 +46,7 @@
         </div>
       }
 
-      @if (currentStep === 2) {
+      @if (currentStep() === 2) {
         <div class="animate-fade-in max-w-4xl mx-auto space-y-10">
           <div class="text-center md:text-left">
             <h1 class="text-4xl md:text-5xl font-extrabold text-emerald-950 tracking-tighter mb-3 drop-shadow-sm">Deep Dive</h1>
@@ -53,9 +54,8 @@
           </div>
 
           <div class="space-y-12"> 
-            @for (detail of emotionDetails; track detail.emotion.name; let i = $index) {
+            @for (detail of emotionDetails(); track detail.emotion.name; let i = $index) {
               <div class="bg-white p-8 md:p-10 rounded-[2.5rem] border border-emerald-100 shadow-[0_10px_30px_rgb(0,0,0,0.03)] relative overflow-hidden">
-                
                 <div class="flex items-center gap-5 mb-8 pb-6 border-b border-emerald-100/70">
                   <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-200 to-teal-100 flex items-center justify-center text-emerald-800 font-extrabold text-2xl shadow-inner border border-emerald-200">{{ i + 1 }}</div>
                   <div>
@@ -92,7 +92,7 @@
         </div>
       }
 
-      @if (currentStep === 3) {
+      @if (currentStep() === 3) {
         <div class="animate-fade-in flex flex-col items-center justify-center text-center py-16 md:py-28 max-w-xl mx-auto space-y-12">
           <div class="w-32 h-32 bg-gradient-to-br from-emerald-200 to-teal-100 rounded-full flex items-center justify-center shadow-lg border-2 border-emerald-100">
             <svg class="w-16 h-16 text-emerald-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -110,43 +110,39 @@
     <div class="fixed md:absolute bottom-0 left-0 w-full bg-white border-t border-emerald-100 p-5 md:px-16 md:py-8 z-40 pb-safe shadow-[0_-10px_30px_rgb(0,0,0,0.03)] md:shadow-none">
       <div class="max-w-4xl mx-auto flex justify-between items-center gap-5">
         
-        @if (currentStep > 1) {
+        @if (currentStep() > 1) {
           <button (click)="prevStep()" class="flex-1 md:flex-none md:w-36 py-4.5 text-base font-bold text-emerald-900 bg-emerald-50 hover:bg-emerald-100 rounded-xl active:bg-emerald-200 transition-colors shadow-sm">Back</button>
         }
         
-        @if (currentStep === 1) {
+        @if (currentStep() === 1) {
           <div class="hidden md:block flex-1"></div>
         }
         
         <button (click)="nextStep()" 
-                [disabled]="isSaving"
+                [disabled]="isSaving()"
                 class="group py-4.5 px-12 text-lg font-bold text-white bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl hover:from-emerald-600 hover:to-teal-600 active:from-emerald-700 active:to-teal-700 shadow-xl shadow-emerald-500/30 hover:shadow-2xl hover:shadow-emerald-500/40 hover:-translate-y-1 flex justify-center items-center transition-all disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:shadow-none" 
-                [ngClass]="currentStep === 1 ? 'w-full md:w-auto md:ml-auto' : 'flex-[2] md:flex-none md:w-60'">
-          <span>{{ currentStep === 3 ? 'Finish & Release' : 'Continue' }}</span>
+                [ngClass]="currentStep() === 1 ? 'w-full md:w-auto md:ml-auto' : 'flex-[2] md:flex-none md:w-60'">
+          <span>{{ currentStep() === 3 ? 'Finish & Release' : 'Continue' }}</span>
         </button>
       </div>
     </div>
 
-    @if (isReleasing) {
-  <div class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-emerald-950/95 backdrop-blur-2xl transition-opacity duration-1000 animate-fade-in">
-    
-    <div class="relative flex items-center justify-center">
-      <div class="absolute w-72 h-72 bg-teal-500/10 rounded-full animate-ping" style="animation-duration: 3s;"></div>
-      <div class="absolute w-48 h-48 bg-emerald-400/20 rounded-full animate-pulse" style="animation-duration: 2s;"></div>
-      
-      <div class="relative z-10 w-24 h-24 bg-gradient-to-br from-emerald-800 to-teal-900 rounded-full flex items-center justify-center shadow-2xl border border-emerald-700/50">
-        <svg class="w-10 h-10 text-emerald-300 drop-shadow-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 13l4 4L19 7"></path>
-        </svg>
+    @if (isReleasing()) {
+      <div class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-emerald-950/95 backdrop-blur-2xl transition-opacity duration-1000 animate-fade-in">
+        <div class="relative flex items-center justify-center">
+          <div class="absolute w-72 h-72 bg-teal-500/10 rounded-full animate-ping" style="animation-duration: 3s;"></div>
+          <div class="absolute w-48 h-48 bg-emerald-400/20 rounded-full animate-pulse" style="animation-duration: 2s;"></div>
+          <div class="relative z-10 w-24 h-24 bg-gradient-to-br from-emerald-800 to-teal-900 rounded-full flex items-center justify-center shadow-2xl border border-emerald-700/50">
+            <svg class="w-10 h-10 text-emerald-300 drop-shadow-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 13l4 4L19 7"></path>
+            </svg>
+          </div>
+        </div>
+        <div class="relative z-10 text-center mt-12 space-y-4">
+          <h2 class="text-4xl md:text-5xl font-serif font-bold text-white tracking-wider drop-shadow-md">Letting Go...</h2>
+          <p class="text-emerald-200/70 text-lg font-medium tracking-widest uppercase">Your emotions have been safely released</p>
+        </div>
       </div>
-    </div>
-
-    <div class="relative z-10 text-center mt-12 space-y-4">
-      <h2 class="text-4xl md:text-5xl font-serif font-bold text-white tracking-wider drop-shadow-md">Letting Go...</h2>
-      <p class="text-emerald-200/70 text-lg font-medium tracking-widest uppercase">Your emotions have been safely released</p>
-    </div>
-    
-  </div>
-}
+    }
   </div>
 </div>

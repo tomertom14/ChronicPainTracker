@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../core/auth/auth.service';
@@ -11,15 +11,16 @@ import { AuthService } from '../../../core/auth/auth.service';
 })
 export class RegisterComponent {
   registerForm: FormGroup;
-  errorMessage: string = '';
-  isLoading: boolean = false;
-  successMessage: string = '';
+  
+  // Define signals with initial values
+  isLoading = signal<boolean>(false);
+  errorMessage = signal<string>('');
+  successMessage = signal<string>('');
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router,
-    private cdr: ChangeDetectorRef
+    private router: Router
   ) {
     this.registerForm = this.fb.group({
       username: ['', [Validators.required, Validators.minLength(3)]],
@@ -28,40 +29,38 @@ export class RegisterComponent {
     });
   }
 
-onSubmit(): void {
+  onSubmit(): void {
     if (this.registerForm.valid) {
-      this.isLoading = true;
-      this.errorMessage = '';
-      this.successMessage = '';
+      // Update signals using .set()
+      this.isLoading.set(true);
+      this.errorMessage.set('');
+      this.successMessage.set('');
 
       this.authService.register(this.registerForm.value).subscribe({
         next: () => {
-          this.isLoading = false;
-          this.successMessage = 'Registration successful! Please check your email to verify your account.';
+          this.isLoading.set(false);
+          this.successMessage.set('Registration successful! Please check your email to verify your account.');
           this.registerForm.reset();
-          
-          this.cdr.detectChanges();
         },
         error: (err) => {
-          this.isLoading = false; 
+          this.isLoading.set(false); 
           
+          // Safely extract the error message
           try {
             if (typeof err.error === 'string') {
-              this.errorMessage = err.error;
+              this.errorMessage.set(err.error);
             } else if (err?.error?.errors) {
               const firstErrorKey = Object.keys(err.error.errors)[0];
-              this.errorMessage = err.error.errors[firstErrorKey][0];
+              this.errorMessage.set(err.error.errors[firstErrorKey][0]);
             } else if (err?.error?.message) {
-              this.errorMessage = err.error.message;
+              this.errorMessage.set(err.error.message);
             } else if (err?.message) {
-              this.errorMessage = err.message;
+              this.errorMessage.set(err.message);
             } else {
-              this.errorMessage = 'Registration failed. Please check your details and try again.';
+              this.errorMessage.set('Registration failed. Please check your details and try again.');
             }
           } catch (e) {
-            this.errorMessage = 'An unexpected error occurred during registration.';
-          } finally {
-            this.cdr.detectChanges();
+            this.errorMessage.set('An unexpected error occurred during registration.');
           }
         }
       });

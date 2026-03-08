@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -31,11 +31,17 @@ interface EmotionDetail {
   styleUrls: ['./practice.css']
 })
 export class PracticeComponent {
-  currentStep: number = 1;
-  isSaving: boolean = false;
-  isReleasing: boolean = false;
+  // State Signals
+  currentStep = signal<number>(1);
+  isSaving = signal<boolean>(false);
+  isReleasing = signal<boolean>(false);
+  newEmotion = signal<string>('');
 
-  emotionsList: EmotionRate[] = [
+  // Computed Signal for progress bar
+  progressWidth = computed(() => (this.currentStep() / 3) * 100);
+
+  // Data Signals
+  emotionsList = signal<EmotionRate[]>([
     { name: 'Anger', intensity: 0 },
     { name: 'Sadness', intensity: 0 },
     { name: 'Insult', intensity: 0 },
@@ -50,28 +56,27 @@ export class PracticeComponent {
     { name: 'Satisfaction', intensity: 0 },
     { name: 'Relief', intensity: 0 },
     { name: 'Calmness', intensity: 0 }
-  ];
+  ]);
 
-  newEmotion: string = '';
-  emotionDetails: EmotionDetail[] = []; 
+  emotionDetails = signal<EmotionDetail[]>([]);
 
-  // Injected HttpClient here
   constructor(private router: Router, private http: HttpClient) {}
 
   addCustomEmotion(): void {
-    const trimmed = this.newEmotion.trim();
+    const trimmed = this.newEmotion().trim();
     if (trimmed) {
-      const exists = this.emotionsList.find(e => e.name.toLowerCase() === trimmed.toLowerCase());
+      const exists = this.emotionsList().find(e => e.name.toLowerCase() === trimmed.toLowerCase());
       if (!exists) {
-        this.emotionsList.unshift({ name: trimmed, intensity: 0 });
+        // Using update to unshift to the array signal
+        this.emotionsList.update(list => [{ name: trimmed, intensity: 0 }, ...list]);
       }
-      this.newEmotion = '';
+      this.newEmotion.set('');
     }
   }
 
   nextStep(): void {
-    if (this.currentStep === 1) {
-      const activeEmotions = this.emotionsList.filter(e => Number(e.intensity) > 0);
+    if (this.currentStep() === 1) {
+      const activeEmotions = this.emotionsList().filter(e => Number(e.intensity) > 0);
       
       if (activeEmotions.length === 0) {
         alert('Please rate at least 1 emotion.');
@@ -81,26 +86,27 @@ export class PracticeComponent {
       const sortedEmotions = activeEmotions.sort((a, b) => Number(b.intensity) - Number(a.intensity));
       const topEmotions = sortedEmotions.slice(0, 3);
       
-      this.emotionDetails = topEmotions.map(e => ({
+      this.emotionDetails.set(topEmotions.map(e => ({
         emotion: e,
         answers: { when: '', whoWhat: '', whereInBody: '', physicalSensation: '', duration: '' }
-      }));
-      this.currentStep++;
+      })));
+      
+      this.currentStep.update(s => s + 1);
     } 
-    else if (this.currentStep === 2) {
-      this.currentStep++;
+    else if (this.currentStep() === 2) {
+      this.currentStep.update(s => s + 1);
     }
-    else if (this.currentStep === 3) {
+    else if (this.currentStep() === 3) {
       this.finishAndSave();
     }
   }
 
   prevStep(): void {
-    this.currentStep--;
+    this.currentStep.update(s => s - 1);
   }
 
   cancelPractice(): void {
-    const hasInput = this.emotionsList.some(e => Number(e.intensity) > 0);
+    const hasInput = this.emotionsList().some(e => Number(e.intensity) > 0);
     if (hasInput) {
       if (confirm('Cancel and lose progress?')) {
         this.router.navigate(['/dashboard']);
@@ -110,17 +116,16 @@ export class PracticeComponent {
     }
   }
 
-finishAndSave(): void {
-    if (this.isSaving) return;
+  finishAndSave(): void {
+    if (this.isSaving()) return;
 
-    // Lock the button and start the full-screen release animation
-    this.isSaving = true;
-    this.isReleasing = true;
+    this.isSaving.set(true);
+    this.isReleasing.set(true);
 
-    const allRatedEmotions = this.emotionsList
+    const allRatedEmotions = this.emotionsList()
       .filter(e => Number(e.intensity) > 0)
       .map(e => {
-        const details = this.emotionDetails.find(d => d.emotion.name === e.name);
+        const details = this.emotionDetails().find(d => d.emotion.name === e.name);
         return {
           name: e.name,
           intensity: Number(e.intensity),
@@ -140,10 +145,8 @@ finishAndSave(): void {
       'Authorization': `Bearer ${token}`
     });
 
-    // 1. Create a promise that just waits for 3.5 seconds (for the animation to play)
     const minimumAnimationTime = new Promise(resolve => setTimeout(resolve, 3500));
 
-    // 2. Create a promise for the actual HTTP call to C#
     const saveToServer = new Promise((resolve, reject) => {
       this.http.post(apiUrl, payload, { headers }).subscribe({
         next: (response) => resolve(response),
@@ -151,19 +154,17 @@ finishAndSave(): void {
       });
     });
 
-    // 3. Wait for BOTH the animation time AND the server response to finish
     Promise.all([saveToServer, minimumAnimationTime])
       .then(() => {
-        console.log('Practice silently saved to DB and animation completed.');
-        this.isSaving = false;
-        this.isReleasing = false;
+        this.isSaving.set(false);
+        this.isReleasing.set(false);
         this.router.navigate(['/dashboard']);
       })
       .catch((error) => {
         console.error('Error saving practice:', error);
-        this.isSaving = false;
-        this.isReleasing = false;
-        alert('There was a slight problem releasing your practice. Please try again.');
+        this.isSaving.set(false);
+        this.isReleasing.set(false);
+        alert('There was a problem releasing your practice. Please try again.');
       });
   }
 }

@@ -1,16 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../../core/auth/auth.service';
 
 @Component({
   selector: 'app-verify-email',
   standalone: true,
-  templateUrl: './verify-email.html',
-  styleUrls: ['./verify-email.css']
+  templateUrl: './verify-email.html'
 })
 export class VerifyEmailComponent implements OnInit {
-  status: 'loading' | 'success' | 'error' = 'loading';
-  errorMessage: string = '';
+  // Using signals for state management
+  status = signal<'loading' | 'success' | 'error'>('loading');
+  errorMessage = signal<string>('');
 
   constructor(
     private route: ActivatedRoute,
@@ -26,8 +26,8 @@ export class VerifyEmailComponent implements OnInit {
       if (email && token) {
         this.verifyUserEmail(email, token);
       } else {
-        this.status = 'error';
-        this.errorMessage = 'Invalid verification link. Missing parameters.';
+        this.status.set('error');
+        this.errorMessage.set('Invalid verification link. Missing parameters.');
       }
     });
   }
@@ -35,12 +35,12 @@ export class VerifyEmailComponent implements OnInit {
   verifyUserEmail(email: string, token: string): void {
     this.authService.confirmEmail(email, token).subscribe({
       next: () => {
-        this.status = 'success';
+        this.status.set('success');
       },
       error: (err) => {
-        this.status = 'error';
-        // Extract error message from backend if available
-        this.errorMessage = err.error?.message || err.error || 'Verification failed. The link might be expired or invalid.';
+        this.status.set('error');
+        const msg = err.error?.message || err.error || 'Verification failed.';
+        this.errorMessage.set(msg);
       }
     });
   }

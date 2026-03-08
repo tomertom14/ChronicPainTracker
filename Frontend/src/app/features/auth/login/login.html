@@ -17,9 +17,9 @@
 
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-5 relative z-10">
       
-      @if (errorMessage) {
+      @if (errorMessage()) {
         <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-xl text-red-700 text-sm font-medium shadow-sm">
-          {{ errorMessage }}
+          {{ errorMessage() }}
         </div>
       }
 
@@ -38,7 +38,7 @@
       <div class="pt-4">
         <button type="submit" [disabled]="loginForm.invalid || isLoading" 
                 class="w-full inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-white transition-all duration-300 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-2xl hover:from-emerald-600 hover:to-teal-600 focus:outline-none focus:ring-4 focus:ring-offset-2 focus:ring-emerald-400 shadow-lg shadow-emerald-500/30 hover:shadow-xl hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed">
-          @if (isLoading) {
+          @if (isLoading()) {
             Signing in...
           } @else {
             Sign In
