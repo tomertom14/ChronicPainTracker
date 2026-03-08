@@ -55,7 +55,7 @@
       </div>
 
       <div class="pt-4">
-        <button type="submit" [disabled]="registerForm.invalid || isLoading" 
+        <button type="submit" [disabled]="registerForm.invalid || isLoading()" 
                 class="w-full inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-white transition-all duration-300 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-2xl hover:from-emerald-600 hover:to-teal-600 focus:outline-none focus:ring-4 focus:ring-offset-2 focus:ring-emerald-400 shadow-lg shadow-emerald-500/30 hover:shadow-xl hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none">
           @if (isLoading()) {
             <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
