@@ -28,7 +28,7 @@ export class RegisterComponent {
     });
   }
 
-  onSubmit(): void {
+onSubmit(): void {
     if (this.registerForm.valid) {
       this.isLoading = true;
       this.errorMessage = '';
@@ -40,26 +40,29 @@ export class RegisterComponent {
           this.successMessage = 'Registration successful! Please check your email to verify your account.';
           this.registerForm.reset();
           
-          // Force UI update on success
           this.cdr.detectChanges();
         },
         error: (err) => {
           this.isLoading = false; 
           
-          // Safely extract the error message
-          if (typeof err.error === 'string') {
-            this.errorMessage = err.error;
-          } else if (err.error && err.error.errors) {
-            const firstErrorKey = Object.keys(err.error.errors)[0];
-            this.errorMessage = err.error.errors[firstErrorKey][0];
-          } else if (err.error && err.error.message) {
-            this.errorMessage = err.error.message;
-          } else {
-            this.errorMessage = 'Registration failed. Please check your details and try again.';
+          try {
+            if (typeof err.error === 'string') {
+              this.errorMessage = err.error;
+            } else if (err?.error?.errors) {
+              const firstErrorKey = Object.keys(err.error.errors)[0];
+              this.errorMessage = err.error.errors[firstErrorKey][0];
+            } else if (err?.error?.message) {
+              this.errorMessage = err.error.message;
+            } else if (err?.message) {
+              this.errorMessage = err.message;
+            } else {
+              this.errorMessage = 'Registration failed. Please check your details and try again.';
+            }
+          } catch (e) {
+            this.errorMessage = 'An unexpected error occurred during registration.';
+          } finally {
+            this.cdr.detectChanges();
           }
-
-          // Force Angular to update the UI and stop the loading spinner
-          this.cdr.detectChanges();
         }
       });
     }
