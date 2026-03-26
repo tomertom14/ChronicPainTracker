@@ -88,21 +88,52 @@ public class AuthController : ControllerBase
         return Ok(new { message = "Registration successful. Please check your email to confirm your account." });
     }
 
-    [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody] UserDto request)
+[HttpPost("login")]
+public async Task<IActionResult> Login([FromBody] UserDto request)
+{
+    // 1. Find user by Username OR Email
+    // We check both because 'request.Username' might actually contain an email string from the frontend
+    var user = await _context.Users.FirstOrDefaultAsync(u => 
+        u.Username == request.Username || 
+        u.Email == request.Username || 
+        u.Email == request.Email);
+
+    // 2. Basic existence and password check
+    // Note: We use a generic "Invalid" message for security
+    if (user == null)
+        return Unauthorized("Invalid username, email, or password.");
+
+    // 3. Google Account Guard
+    // If PasswordHash is empty, it means they registered via Google. 
+    // BCrypt.Verify("") will fail, but it's better to tell the user WHY.
+    if (string.IsNullOrEmpty(user.PasswordHash))
     {
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == request.Username);
-
-        if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
-            return Unauthorized("Invalid username or password.");
-
-        // --- NEW: Block login if email is not confirmed ---
-        if (!user.IsEmailConfirmed)
-            return Unauthorized("Please confirm your email before logging in.");
-
-        var token = CreateToken(user);
-        return Ok(new { token });
+        return Unauthorized("This account was created using Google. Please Sign in with Google.");
     }
+
+    // 4. Verify the password
+    if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
+    {
+        return Unauthorized("Invalid username, email, or password.");
+    }
+
+    // 5. Email Confirmation Guard
+    if (!user.IsEmailConfirmed)
+    {
+        return Unauthorized("Please confirm your email before logging in. Check your inbox!");
+    }
+
+    // 6. Success - Generate and return the JWT
+    var token = CreateToken(user);
+    
+    // Optional: You can also return some user info (excluding password!) so the frontend
+    // can display the name immediately without decoding the JWT.
+    return Ok(new { 
+        token, 
+        username = user.Username, 
+        email = user.Email 
+    });
+}
 
 
     [HttpGet("confirm-email")]
