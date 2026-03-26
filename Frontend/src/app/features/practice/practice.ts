@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 interface EmotionRate {
   name: string;
@@ -26,7 +27,7 @@ interface EmotionDetail {
 @Component({
   selector: 'app-practice',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './practice.html',
   styleUrls: ['./practice.css']
 })
@@ -60,7 +61,13 @@ export class PracticeComponent {
 
   emotionDetails = signal<EmotionDetail[]>([]);
 
-  constructor(private router: Router, private http: HttpClient) {}
+  constructor(private router: Router, private http: HttpClient, private translate: TranslateService) {}
+
+  getEmotionName(name: string): string {
+    const key = `EMOTIONS.${name}`;
+    const translatedKey = this.translate.instant(key);
+    return translatedKey === key ? name : translatedKey;
+  }
 
   addCustomEmotion(): void {
     const trimmed = this.newEmotion().trim();
@@ -79,7 +86,7 @@ export class PracticeComponent {
       const activeEmotions = this.emotionsList().filter(e => Number(e.intensity) > 0);
       
       if (activeEmotions.length === 0) {
-        alert('Please rate at least 1 emotion.');
+        alert(this.translate.instant('PRACTICE.RATE_ALERT'));
         return;
       }
 
@@ -108,7 +115,7 @@ export class PracticeComponent {
   cancelPractice(): void {
     const hasInput = this.emotionsList().some(e => Number(e.intensity) > 0);
     if (hasInput) {
-      if (confirm('Cancel and lose progress?')) {
+      if (confirm(this.translate.instant('PRACTICE.CANCEL_ALERT'))) {
         this.router.navigate(['/dashboard']);
       }
     } else {
@@ -164,7 +171,7 @@ export class PracticeComponent {
         console.error('Error saving practice:', error);
         this.isSaving.set(false);
         this.isReleasing.set(false);
-        alert('There was a problem releasing your practice. Please try again.');
+        alert(this.translate.instant('PRACTICE.ERROR_ALERT'));
       });
   }
 }

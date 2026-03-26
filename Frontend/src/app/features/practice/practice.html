@@ -8,8 +8,8 @@
              [style.width.%]="progressWidth()"></div>
       </div>
       <div class="px-6 md:px-10 py-5 flex justify-between items-center">
-        <span class="text-sm md:text-base font-bold text-emerald-950/50 uppercase tracking-widest">Step {{ currentStep() }} of 3</span>
-        <button (click)="cancelPractice()" class="text-sm md:text-base font-bold text-emerald-700/70 hover:text-rose-600 transition-colors">Close</button>
+        <span class="text-sm md:text-base font-bold text-emerald-950/50 uppercase tracking-widest">{{ 'PRACTICE.STEP_OF' | translate:{current: currentStep()} }}</span>
+        <button (click)="cancelPractice()" class="text-sm md:text-base font-bold text-emerald-700/70 hover:text-rose-600 transition-colors">{{ 'PRACTICE.CLOSE' | translate }}</button>
       </div>
     </div>
 
@@ -18,14 +18,14 @@
       @if (currentStep() === 1) {
         <div class="animate-fade-in max-w-3xl mx-auto space-y-10">
           <div class="text-center md:text-left">
-            <h1 class="text-4xl md:text-5xl font-extrabold text-emerald-950 tracking-tighter mb-3 drop-shadow-sm">How are you feeling?</h1>
-            <p class="text-lg md:text-xl text-emerald-900/80 font-medium max-w-xl mx-auto md:mx-0">Move the slider for any emotions you're experiencing.</p>
+            <h1 class="text-4xl md:text-5xl font-extrabold text-emerald-950 tracking-tighter mb-3 drop-shadow-sm">{{ 'PRACTICE.HOW_FEELING' | translate }}</h1>
+            <p class="text-lg md:text-xl text-emerald-900/80 font-medium max-w-xl mx-auto md:mx-0">{{ 'PRACTICE.MOVE_SLIDER' | translate }}</p>
           </div>
 
           <div class="flex gap-4 p-3 bg-white rounded-2xl border border-emerald-100 shadow-sm">
-            <input type="text" [ngModel]="newEmotion()" (ngModelChange)="newEmotion.set($event)" placeholder="Add custom emotion..." 
+            <input type="text" [ngModel]="newEmotion()" (ngModelChange)="newEmotion.set($event)" [placeholder]="'PRACTICE.ADD_CUSTOM' | translate"
                    class="flex-1 px-5 py-4 text-base bg-emerald-50/50 border border-emerald-100 rounded-xl focus:ring-2 focus:ring-emerald-400 outline-none transition-all placeholder:text-emerald-900/30 text-emerald-950">
-            <button (click)="addCustomEmotion()" class="px-8 py-4 bg-emerald-600 text-white font-bold rounded-xl active:bg-emerald-700 hover:bg-emerald-700 transition-colors shadow-md">Add</button>
+            <button (click)="addCustomEmotion()" class="px-8 py-4 bg-emerald-600 text-white font-bold rounded-xl active:bg-emerald-700 hover:bg-emerald-700 transition-colors shadow-md">{{ 'PRACTICE.ADD_BTN' | translate }}</button>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -33,7 +33,7 @@
               <div class="p-5 rounded-3xl border transition-all duration-300"
                    [ngClass]="item.intensity > 0 ? 'bg-emerald-950 border-emerald-900 shadow-xl' : 'bg-white border-emerald-100 shadow-sm'">
                 <div class="flex justify-between items-center mb-5">
-                  <span class="text-lg font-bold transition-colors" [ngClass]="item.intensity > 0 ? 'text-white' : 'text-emerald-950'">{{ item.name }}</span>
+                  <span class="text-lg font-bold transition-colors" [ngClass]="item.intensity > 0 ? 'text-white' : 'text-emerald-950'">{{ getEmotionName(item.name) }}</span>
                   
                   @if (item.intensity > 0) {
                     <span class="text-sm font-extrabold text-emerald-950 bg-emerald-100 px-3 py-1 rounded-lg">{{ item.intensity }}/10</span>
@@ -49,8 +49,8 @@
       @if (currentStep() === 2) {
         <div class="animate-fade-in max-w-4xl mx-auto space-y-10">
           <div class="text-center md:text-left">
-            <h1 class="text-4xl md:text-5xl font-extrabold text-emerald-950 tracking-tighter mb-3 drop-shadow-sm">Deep Dive</h1>
-            <p class="text-lg md:text-xl text-emerald-900/80 font-medium max-w-xl mx-auto md:mx-0">Reflect on your dominant emotions.</p>
+            <h1 class="text-4xl md:text-5xl font-extrabold text-emerald-950 tracking-tighter mb-3 drop-shadow-sm">{{ 'PRACTICE.DEEP_DIVE' | translate }}</h1>
+            <p class="text-lg md:text-xl text-emerald-900/80 font-medium max-w-xl mx-auto md:mx-0">{{ 'PRACTICE.REFLECT' | translate }}</p>
           </div>
 
           <div class="space-y-12"> 
@@ -59,30 +59,30 @@
                 <div class="flex items-center gap-5 mb-8 pb-6 border-b border-emerald-100/70">
                   <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-200 to-teal-100 flex items-center justify-center text-emerald-800 font-extrabold text-2xl shadow-inner border border-emerald-200">{{ i + 1 }}</div>
                   <div>
-                    <h2 class="text-3xl font-extrabold text-emerald-950 tracking-tight">{{ detail.emotion.name }}</h2>
-                    <span class="text-base font-bold text-emerald-700/70">Intensity: {{ detail.emotion.intensity }} / 10</span>
+                    <h2 class="text-3xl font-extrabold text-emerald-950 tracking-tight">{{ getEmotionName(detail.emotion.name) }}</h2>
+                    <span class="text-base font-bold text-emerald-700/70">{{ 'PRACTICE.INTENSITY' | translate }}: {{ detail.emotion.intensity }} / 10</span>
                   </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-8">
                   <div class="col-span-1">
-                    <label class="block text-sm font-bold text-emerald-950/80 mb-2.5">1. When did I feel this?</label>
+                    <label class="block text-sm font-bold text-emerald-950/80 mb-2.5">{{ 'PRACTICE.Q1' | translate }}</label>
                     <textarea rows="2" [(ngModel)]="detail.answers.when" class="w-full px-5 py-4 text-base bg-emerald-50/50 border border-emerald-100/70 rounded-xl outline-none focus:ring-2 focus:ring-emerald-400 focus:bg-white resize-none shadow-sm transition-all text-emerald-950"></textarea>
                   </div>
                   <div class="col-span-1">
-                    <label class="block text-sm font-bold text-emerald-950/80 mb-2.5">2. Regarding what/whom?</label>
+                    <label class="block text-sm font-bold text-emerald-950/80 mb-2.5">{{ 'PRACTICE.Q2' | translate }}</label>
                     <textarea rows="2" [(ngModel)]="detail.answers.whoWhat" class="w-full px-5 py-4 text-base bg-emerald-50/50 border border-emerald-100/70 rounded-xl outline-none focus:ring-2 focus:ring-emerald-400 focus:bg-white resize-none shadow-sm transition-all text-emerald-950"></textarea>
                   </div>
                   <div class="col-span-1">
-                    <label class="block text-sm font-bold text-emerald-950/80 mb-2.5">3. Where is it in the body?</label>
+                    <label class="block text-sm font-bold text-emerald-950/80 mb-2.5">{{ 'PRACTICE.Q3' | translate }}</label>
                     <textarea rows="2" [(ngModel)]="detail.answers.whereInBody" class="w-full px-5 py-4 text-base bg-emerald-50/50 border border-emerald-100/70 rounded-xl outline-none focus:ring-2 focus:ring-emerald-400 focus:bg-white resize-none shadow-sm transition-all text-emerald-950"></textarea>
                   </div>
                   <div class="col-span-1">
-                    <label class="block text-sm font-bold text-emerald-950/80 mb-2.5">4. How exactly does it feel?</label>
+                    <label class="block text-sm font-bold text-emerald-950/80 mb-2.5">{{ 'PRACTICE.Q4' | translate }}</label>
                     <textarea rows="2" [(ngModel)]="detail.answers.physicalSensation" class="w-full px-5 py-4 text-base bg-emerald-50/50 border border-emerald-100/70 rounded-xl outline-none focus:ring-2 focus:ring-emerald-400 focus:bg-white resize-none shadow-sm transition-all text-emerald-950"></textarea>
                   </div>
                   <div class="col-span-1 md:col-span-2">
-                    <label class="block text-sm font-bold text-emerald-950/80 mb-2.5">5. How long did it last?</label>
+                    <label class="block text-sm font-bold text-emerald-950/80 mb-2.5">{{ 'PRACTICE.Q5' | translate }}</label>
                     <textarea rows="2" [(ngModel)]="detail.answers.duration" class="w-full px-5 py-4 text-base bg-emerald-50/50 border border-emerald-100/70 rounded-xl outline-none focus:ring-2 focus:ring-emerald-400 focus:bg-white resize-none shadow-sm transition-all text-emerald-950"></textarea>
                   </div>
                 </div>
@@ -98,10 +98,10 @@
             <svg class="w-16 h-16 text-emerald-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
           </div>
           <div class="space-y-6">
-            <h1 class="text-4xl md:text-6xl font-extrabold text-emerald-950 tracking-tighter drop-shadow-sm">Cleansing Shower</h1>
-            <p class="text-xl md:text-2xl text-emerald-900 leading-snug font-medium max-w-lg mx-auto">Imagine a cleansing emotional shower washing over you, letting the feelings flow out and away.</p>
+            <h1 class="text-4xl md:text-6xl font-extrabold text-emerald-950 tracking-tighter drop-shadow-sm">{{ 'PRACTICE.CLEANSING_SHOWER' | translate }}</h1>
+            <p class="text-xl md:text-2xl text-emerald-900 leading-snug font-medium max-w-lg mx-auto">{{ 'PRACTICE.IMAGINE' | translate }}</p>
           </div>
-          <p class="text-sm text-teal-900 font-bold tracking-widest uppercase bg-teal-100 px-7 py-3 rounded-full border border-teal-200 shadow-sm">Ready to let go?</p>
+          <p class="text-sm text-teal-900 font-bold tracking-widest uppercase bg-teal-100 px-7 py-3 rounded-full border border-teal-200 shadow-sm">{{ 'PRACTICE.READY' | translate }}</p>
         </div>
       }
 
@@ -111,7 +111,7 @@
       <div class="max-w-4xl mx-auto flex justify-between items-center gap-5">
         
         @if (currentStep() > 1) {
-          <button (click)="prevStep()" class="flex-1 md:flex-none md:w-36 py-4.5 text-base font-bold text-emerald-900 bg-emerald-50 hover:bg-emerald-100 rounded-xl active:bg-emerald-200 transition-colors shadow-sm">Back</button>
+          <button (click)="prevStep()" class="flex-1 md:flex-none md:w-36 py-4.5 text-base font-bold text-emerald-900 bg-emerald-50 hover:bg-emerald-100 rounded-xl active:bg-emerald-200 transition-colors shadow-sm">{{ 'PRACTICE.BACK' | translate }}</button>
         }
         
         @if (currentStep() === 1) {
@@ -122,7 +122,7 @@
                 [disabled]="isSaving()"
                 class="group py-4.5 px-12 text-lg font-bold text-white bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl hover:from-emerald-600 hover:to-teal-600 active:from-emerald-700 active:to-teal-700 shadow-xl shadow-emerald-500/30 hover:shadow-2xl hover:shadow-emerald-500/40 hover:-translate-y-1 flex justify-center items-center transition-all disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:shadow-none" 
                 [ngClass]="currentStep() === 1 ? 'w-full md:w-auto md:ml-auto' : 'flex-[2] md:flex-none md:w-60'">
-          <span>{{ currentStep() === 3 ? 'Finish & Release' : 'Continue' }}</span>
+          <span>{{ currentStep() === 3 ? ('PRACTICE.FINISH' | translate) : ('PRACTICE.CONTINUE' | translate) }}</span>
         </button>
       </div>
     </div>
@@ -139,8 +139,8 @@
           </div>
         </div>
         <div class="relative z-10 text-center mt-12 space-y-4">
-          <h2 class="text-4xl md:text-5xl font-serif font-bold text-white tracking-wider drop-shadow-md">Letting Go...</h2>
-          <p class="text-emerald-200/70 text-lg font-medium tracking-widest uppercase">Your emotions have been safely released</p>
+          <h2 class="text-4xl md:text-5xl font-serif font-bold text-white tracking-wider drop-shadow-md">{{ 'PRACTICE.LETTING_GO' | translate }}</h2>
+          <p class="text-emerald-200/70 text-lg font-medium tracking-widest uppercase">{{ 'PRACTICE.RELEASED' | translate }}</p>
         </div>
       </div>
     }

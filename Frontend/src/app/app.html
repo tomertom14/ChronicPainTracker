@@ -1,5 +1,12 @@
 @if (warmupService.isWakingServer()) {
   <app-startup-loader></app-startup-loader>
 } @else {
+  <!-- Global Language Switcher -->
+  <button 
+    (click)="toggleLanguage()" 
+    class="fixed bottom-6 left-6 md:auto md:bottom-auto md:top-6 z-50 px-4 py-2 bg-white text-emerald-800 font-bold border-2 border-emerald-200 rounded-full shadow-lg hover:bg-emerald-50 transition-colors drop-shadow-md">
+    {{ 'APP.SWITCH_LANG' | translate }}
+  </button>
+
   <router-outlet></router-outlet>
 }

@@ -1,6 +1,8 @@
-import { Component, AfterViewInit, signal } from '@angular/core';
+import { Component, AfterViewInit, signal, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from '../../../core/auth/auth.service';
 import { environment } from '../../../../environments/environment'
 
@@ -9,7 +11,7 @@ declare var google: any;
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterModule],
+  imports: [ReactiveFormsModule, RouterModule, TranslateModule],
   templateUrl: './login.html'
 })
 export class LoginComponent implements AfterViewInit {
@@ -20,24 +22,27 @@ export class LoginComponent implements AfterViewInit {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {
     this.loginForm = this.fb.group({
-      username: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required]
     });
   }
 
   ngAfterViewInit(): void {
-    google.accounts.id.initialize({
-      client_id: environment.googleClientId,
-      callback: (response: any) => this.handleGoogleResponse(response)
-    });
+    if (isPlatformBrowser(this.platformId) && typeof google !== 'undefined') {
+      google.accounts.id.initialize({
+        client_id: environment.googleClientId,
+        callback: (response: any) => this.handleGoogleResponse(response)
+      });
 
-    google.accounts.id.renderButton(
-      document.getElementById('google-btn'),
-      { theme: 'outline', size: 'large', width: '300' }
-    );
+      google.accounts.id.renderButton(
+        document.getElementById('google-btn'),
+        { theme: 'outline', size: 'large', width: '300' }
+      );
+    }
   }
 
 handleGoogleResponse(response: any): void {
@@ -69,7 +74,7 @@ handleGoogleResponse(response: any): void {
         },
         error: (err) => {
           this.isLoading.set(false);
-          const msg = err.error?.message || err.error || 'Invalid username or password.';
+          const msg = err.error?.message || err.error || 'Invalid email or password.';
           this.errorMessage.set(msg);
           this.loginForm.get('password')?.reset();
         }

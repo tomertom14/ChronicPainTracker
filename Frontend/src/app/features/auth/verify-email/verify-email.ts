@@ -1,10 +1,12 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from '../../../core/auth/auth.service';
 
 @Component({
   selector: 'app-verify-email',
   standalone: true,
+  imports: [TranslateModule],
   templateUrl: './verify-email.html'
 })
 export class VerifyEmailComponent implements OnInit {

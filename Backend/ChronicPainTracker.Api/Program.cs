@@ -78,6 +78,14 @@ public class Program
         app.UseCors(corsPolicyName);
         app.UseAuthentication();
         app.UseAuthorization();
+        
+        // Ensure Database Migrations are executed on Startup automatically (crucial for Render deployment)
+        using (var scope = app.Services.CreateScope())
+        {
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            db.Database.Migrate();
+        }
+
         app.MapControllers();
 
         app.MapGet("/api/health", async (AppDbContext dbContext) => 
