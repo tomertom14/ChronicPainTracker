@@ -54,8 +54,18 @@ public class AuthController : ControllerBase
         await _context.SaveChangesAsync();
 
         // 4. Send the confirmation email
-        // We will point the link to your local Angular app for now
-        var frontendUrl = _configuration["FrontendUrl"] ?? "http://localhost:4200";
+        var frontendUrl = _configuration["FrontendUrl"];
+        if (string.IsNullOrEmpty(frontendUrl) || frontendUrl == "http://localhost:4200")
+        {
+            // If it's hitting the localhost fallback because of appsettings.Development.json or missing env vars, print a warning in the server logs
+            Console.WriteLine("WARNING: FrontendUrl was empty or local. Check your environment variables! Defaulting to localhost.");
+            frontendUrl = "http://localhost:4200";
+        }
+        else
+        {
+            Console.WriteLine($"INFO: Successfully loaded FrontendUrl: {frontendUrl}");
+        }
+
         var confirmationLink = $"{frontendUrl}/verify-email?token={confirmationToken}&email={request.Email}";
 
         var emailBody = $@"
@@ -81,10 +91,10 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] UserDto request)
     {
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == request.Username);
 
         if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
-            return Unauthorized("Invalid email or password.");
+            return Unauthorized("Invalid username or password.");
 
         // --- NEW: Block login if email is not confirmed ---
         if (!user.IsEmailConfirmed)
