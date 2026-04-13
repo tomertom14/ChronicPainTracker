@@ -12,7 +12,7 @@ import { Component } from '@angular/core';
 
       <h2 class="text-3xl font-extrabold text-emerald-950 mb-3 tracking-tight">Waking up the server...</h2>
       <p class="text-emerald-700/80 font-medium max-w-sm text-center">
-        The backend is starting up. This might take up to 50 seconds on the free tier.
+        "We're preparing everything for you. This might take just a moment (30 sec) while our systems wake up."
       </p>
     </div>
   `
