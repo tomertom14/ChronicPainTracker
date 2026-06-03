@@ -4,10 +4,11 @@ import { DOCUMENT } from '@angular/common';
 import { WarmupService } from './core/services/warmup';
 import { StartupLoaderComponent } from './core/startup-loader';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
+import { NavbarComponent } from './core/layout/navbar/navbar';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, StartupLoaderComponent, TranslateModule],
+  imports: [RouterOutlet, StartupLoaderComponent, TranslateModule, NavbarComponent],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
@@ -18,7 +19,7 @@ export class App implements OnInit {
 
   constructor(
     private translate: TranslateService,
-    @Inject(DOCUMENT) private document: Document
+    @Inject(DOCUMENT) private document: Document,
   ) {
     // Check localStorage or default to 'en'
     let savedLang = 'en';
@@ -33,18 +34,13 @@ export class App implements OnInit {
     this.warmupService.initiateWarmup();
   }
 
-  toggleLanguage(): void {
-    const nextLang = this.currentLang() === 'en' ? 'he' : 'en';
-    this.setLanguage(nextLang);
-  }
-
   private setLanguage(lang: string): void {
     this.currentLang.set(lang);
     this.translate.use(lang);
     if (typeof localStorage !== 'undefined') {
       localStorage.setItem('i18n_lang', lang);
     }
-    
+
     // Set text direction
     const htmlTag = this.document.getElementsByTagName('html')[0];
     if (htmlTag) {
