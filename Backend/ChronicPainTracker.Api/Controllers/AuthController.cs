@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using ChronicPainTracker.Api.Data;
 using ChronicPainTracker.Api.Models;
-using ChronicPainTracker.Api.Services; 
+using ChronicPainTracker.Api.Services;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -30,11 +30,12 @@ public class AuthController : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] UserDto request)
     {
-        // 1. Check if Username or Email already exists
+        var normalizedEmail = request.Email.Trim().ToLower();
+
         if (await _context.Users.AnyAsync(u => u.Username == request.Username))
             return BadRequest("Username already exists.");
 
-        if (await _context.Users.AnyAsync(u => u.Email == request.Email))
+        if (await _context.Users.AnyAsync(u => u.Email.ToLower() == normalizedEmail))
             return BadRequest("Email already exists.");
 
         // 2. Generate a unique confirmation token
@@ -88,52 +89,53 @@ public class AuthController : ControllerBase
         return Ok(new { message = "Registration successful. Please check your email to confirm your account." });
     }
 
-[HttpPost("login")]
-public async Task<IActionResult> Login([FromBody] UserDto request)
-{
-    // 1. Find user by Username OR Email
-    // We check both because 'request.Username' might actually contain an email string from the frontend
-    var user = await _context.Users.FirstOrDefaultAsync(u => 
-        u.Username == request.Username || 
-        u.Email == request.Username || 
-        u.Email == request.Email);
-
-    // 2. Basic existence and password check
-    // Note: We use a generic "Invalid" message for security
-    if (user == null)
-        return Unauthorized("Invalid username, email, or password.");
-
-    // 3. Google Account Guard
-    // If PasswordHash is empty, it means they registered via Google. 
-    // BCrypt.Verify("") will fail, but it's better to tell the user WHY.
-    if (string.IsNullOrEmpty(user.PasswordHash))
+    [HttpPost("login")]
+    public async Task<IActionResult> Login([FromBody] UserDto request)
     {
-        return Unauthorized("This account was created using Google. Please Sign in with Google.");
-    }
+        var normalizedInput = request.Username.Trim().ToLower();
+        var normalizedEmailInput = request.Email?.Trim().ToLower();
 
-    // 4. Verify the password
-    if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
-    {
-        return Unauthorized("Invalid username, email, or password.");
-    }
+        var user = await _context.Users.FirstOrDefaultAsync(u =>
+            u.Username.ToLower() == normalizedInput ||
+            u.Email.ToLower() == normalizedInput ||
+            (normalizedEmailInput != null && u.Email.ToLower() == normalizedEmailInput));
+        // 2. Basic existence and password check
+        // Note: We use a generic "Invalid" message for security
+        if (user == null)
+            return Unauthorized("Invalid username, email, or password.");
 
-    // 5. Email Confirmation Guard
-    if (!user.IsEmailConfirmed)
-    {
-        return Unauthorized("Please confirm your email before logging in. Check your inbox!");
-    }
+        // 3. Google Account Guard
+        // If PasswordHash is empty, it means they registered via Google. 
+        // BCrypt.Verify("") will fail, but it's better to tell the user WHY.
+        if (string.IsNullOrEmpty(user.PasswordHash))
+        {
+            return Unauthorized("This account was created using Google. Please Sign in with Google.");
+        }
 
-    // 6. Success - Generate and return the JWT
-    var token = CreateToken(user);
-    
-    // Optional: You can also return some user info (excluding password!) so the frontend
-    // can display the name immediately without decoding the JWT.
-    return Ok(new { 
-        token, 
-        username = user.Username, 
-        email = user.Email 
-    });
-}
+        // 4. Verify the password
+        if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
+        {
+            return Unauthorized("Invalid username, email, or password.");
+        }
+
+        // 5. Email Confirmation Guard
+        if (!user.IsEmailConfirmed)
+        {
+            return Unauthorized("Please confirm your email before logging in. Check your inbox!");
+        }
+
+        // 6. Success - Generate and return the JWT
+        var token = CreateToken(user);
+
+        // Optional: You can also return some user info (excluding password!) so the frontend
+        // can display the name immediately without decoding the JWT.
+        return Ok(new
+        {
+            token,
+            username = user.Username,
+            email = user.Email
+        });
+    }
 
 
     [HttpGet("confirm-email")]
@@ -175,8 +177,8 @@ public async Task<IActionResult> Login([FromBody] UserDto request)
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
-    
-   [HttpPost("google")]
+
+    [HttpPost("google")]
     public async Task<IActionResult> GoogleLogin([FromBody] GoogleAuthRequest request)
     {
         try
@@ -189,26 +191,27 @@ public async Task<IActionResult> Login([FromBody] UserDto request)
 
             var payload = await GoogleJsonWebSignature.ValidateAsync(request.Token, settings);
 
-            // Updated _dbContext to _context to match your controller
-            var user = _context.Users.FirstOrDefault(u => u.Email == payload.Email);
+            var normalizedEmail = payload.Email.Trim().ToLower();
+
+            var user = _context.Users.FirstOrDefault(u => u.Email.ToLower() == normalizedEmail);
 
             if (user == null)
             {
                 user = new User
                 {
-                    Email = payload.Email,
-                    Username = payload.Name ?? payload.Email.Split('@')[0],
+                    Email = normalizedEmail, 
+                    Username = payload.Name ?? normalizedEmail.Split('@')[0],
                     PasswordHash = "", // Provide an empty string or dummy hash if your DB requires this field
                     IsEmailConfirmed = true // Updated to match your User model
                 };
-                
+
                 _context.Users.Add(user);
                 await _context.SaveChangesAsync();
             }
 
-            var jwtToken = CreateToken(user); 
+            var jwtToken = CreateToken(user);
 
-            return Ok(new { token = jwtToken }); 
+            return Ok(new { token = jwtToken });
         }
         catch (InvalidJwtException)
         {
@@ -221,7 +224,8 @@ public async Task<IActionResult> Login([FromBody] UserDto request)
     }
 }
 // Simple DTO for receiving data
-public class UserDto { 
+public class UserDto
+{
     public string Username { get; set; } = string.Empty;
     public string Password { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
