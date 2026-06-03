@@ -5,6 +5,12 @@ node_modules/
 dist/
 .angular/
 .env
+.env.*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+coverage/
+.cache/
 
 # =========================
 # .NET & C# (Backend)
@@ -13,11 +19,29 @@ dist/
 [Oo]bj/
 .vs/
 *.user
+*.suo
 appsettings.Development.json
+appsettings.*.Local.json
 *.log
+TestResults/
+
+# =========================
+# Docker & Database
+# =========================
+docker-compose.override.yml
+.docker/
+postgres_data/
+pgdata/
+
+# =========================
+# Cloud Deployments
+# =========================
+.vercel/
 
 # =========================
 # OS & Editors
 # =========================
 .DS_Store
+Thumbs.db
 .vscode/
+.idea/

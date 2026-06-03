@@ -1,7 +1,6 @@
 version: '3.8'
 
 services:
-  # The local PostgreSQL database container
   db:
     image: postgres:15-alpine
     restart: always
@@ -12,8 +11,30 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      # This ensures data isn't lost if the container restarts
       - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: ./Backend/ChronicPainTracker.Api
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=db;Database=chronic_pain_local_db;Username=tomer;Password=localpassword123
+    depends_on:
+      - db
+
+  frontend:
+    build:
+      context: ./Frontend
+      dockerfile: Dockerfile.dev
+    ports:
+      - "4200:4200"
+    environment:
+      - API_URL=http://localhost:8080
+    depends_on:
+      - backend
 
 volumes:
   postgres_data:

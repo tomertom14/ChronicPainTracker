@@ -7,6 +7,11 @@ import {
 import express from 'express';
 import { join } from 'node:path';
 
+// Only allow localhost SSR bypass when NOT running on Vercel
+if (!process.env['VERCEL']) {
+  process.env['NG_ALLOWED_HOSTS'] = 'localhost,127.0.0.1,0.0.0.0';
+}
+
 const browserDistFolder = join(import.meta.dirname, '../browser');
 
 const app = express();
