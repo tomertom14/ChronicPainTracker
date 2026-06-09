@@ -1,78 +1,110 @@
-<div class="min-h-screen bg-gradient-to-br from-emerald-100 via-teal-100 to-stone-100 flex flex-col items-center justify-center font-sans p-6 animate-fade-in relative selection:bg-emerald-300/60">
+<div class="min-h-[calc(100vh-80px)] flex flex-col md:flex-row bg-white selection:bg-emerald-200/60 font-sans">
   
-  <div class="w-full max-w-md bg-white rounded-[2.5rem] p-8 md:p-12 shadow-[0_15px_40px_rgb(0,0,0,0.06)] border border-emerald-100 relative overflow-hidden transition-all duration-500 z-10">
-    
-    <div class="absolute top-0 right-0 -mr-16 -mt-16 w-48 h-48 rounded-full bg-emerald-100/70 blur-3xl -z-10"></div>
-    <div class="absolute bottom-0 left-0 -ml-16 -mb-16 w-40 h-40 rounded-full bg-teal-100/70 blur-3xl -z-10"></div>
-
-    <div class="text-center mb-8">
-      <h2 class="text-3xl md:text-4xl font-extrabold text-emerald-950 tracking-tight mb-2">{{ 'AUTH.REGISTER.TITLE' | translate }}</h2>
-      <p class="text-emerald-900/70 font-medium">{{ 'AUTH.REGISTER.SUBTITLE' | translate }}</p>
+  <!-- Left Side: Visual/Branding -->
+  <div class="hidden md:flex md:w-1/2 lg:w-3/5 bg-gradient-to-br from-emerald-900 via-emerald-800 to-teal-950 p-16 flex-col justify-between relative overflow-hidden">
+    <!-- Decorative elements -->
+    <div class="absolute top-0 left-0 w-full h-full opacity-20">
+      <div class="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] rounded-full bg-emerald-400 blur-[120px]"></div>
+      <div class="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-teal-300 blur-[100px]"></div>
     </div>
 
-    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="space-y-5 relative z-10">
+    <div class="relative z-10">
+      <div class="flex items-center gap-3 mb-12">
+        <div class="w-12 h-12 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center text-white font-serif font-bold border border-white/20">
+          CP
+        </div>
+        <span class="font-serif font-bold text-3xl text-white tracking-tight italic">PainTracker</span>
+      </div>
       
-      @if (errorMessage()) {
-        <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-xl text-red-700 text-sm font-medium shadow-sm">
-          {{ errorMessage() }}
-        </div>
-      }
+      <div class="space-y-8 max-w-lg">
+        <h1 class="text-6xl lg:text-7xl font-serif font-bold text-white leading-tight">
+          Begin your <span class="italic text-emerald-300">healing</span> chapter.
+        </h1>
+        <p class="text-xl text-emerald-100/80 font-medium leading-relaxed">
+          Create an account to start tracking your journey. Gain insights, practice mindfulness, and discover the path to a more balanced life.
+        </p>
+      </div>
+    </div>
 
-      @if (successMessage()) {
-        <div class="bg-emerald-50 border-l-4 border-emerald-500 p-4 rounded-xl text-emerald-800 text-sm font-medium shadow-sm">
-          {{ successMessage() }}
-        </div>
-      }
+    <div class="relative z-10 flex items-center gap-4 text-emerald-200/60 font-medium tracking-widest uppercase text-xs">
+      <span class="w-12 h-[1px] bg-emerald-200/30"></span>
+      <span>Holistic Wellness</span>
+    </div>
+  </div>
 
-      <div class="space-y-1.5">
-        <label for="username" class="block text-sm font-bold text-emerald-900 ml-1">{{ 'AUTH.REGISTER.USERNAME_LABEL' | translate }}</label>
-        <input id="username" type="text" formControlName="username" [placeholder]="'AUTH.REGISTER.USERNAME_PLACEHOLDER' | translate" 
-               class="w-full px-5 py-3.5 bg-white border border-emerald-200 rounded-2xl text-emerald-950 placeholder-emerald-300 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-300" />
-        
-        @if (registerForm.get('username')?.invalid && registerForm.get('username')?.touched) {
-          <p class="text-red-500 text-xs font-semibold ml-2 mt-1">{{ 'AUTH.REGISTER.USERNAME_ERROR_REQUIRED' | translate }}</p>
-        }
+  <!-- Right Side: Form -->
+  <div class="flex-1 flex flex-col justify-center items-center p-8 md:p-16 lg:p-24 bg-white">
+    <div class="w-full max-w-md space-y-8">
+      
+      <div class="text-center md:text-left space-y-3">
+        <h2 class="text-4xl md:text-5xl font-serif font-bold text-emerald-950 tracking-tight">{{ 'AUTH.REGISTER.TITLE' | translate }}</h2>
+        <p class="text-sage-600 font-medium text-lg">{{ 'AUTH.REGISTER.SUBTITLE' | translate }}</p>
       </div>
 
-      <div class="space-y-1.5">
-        <label for="email" class="block text-sm font-bold text-emerald-900 ml-1">{{ 'AUTH.REGISTER.EMAIL_LABEL' | translate }}</label>
-        <input id="email" type="email" formControlName="email" [placeholder]="'AUTH.REGISTER.EMAIL_PLACEHOLDER' | translate" 
-               class="w-full px-5 py-3.5 bg-white border border-emerald-200 rounded-2xl text-emerald-950 placeholder-emerald-300 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-300" />
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="space-y-5">
         
-        @if (registerForm.get('email')?.invalid && registerForm.get('email')?.touched) {
-          <p class="text-red-500 text-xs font-semibold ml-2 mt-1">{{ 'AUTH.REGISTER.EMAIL_ERROR_INVALID' | translate }}</p>
+        @if (errorMessage()) {
+          <div class="bg-red-50 border-l-4 border-red-500 p-5 rounded-2xl text-red-700 text-sm font-semibold shadow-sm animate-fade-in">
+            {{ errorMessage() }}
+          </div>
         }
-      </div>
 
-      <div class="space-y-1.5">
-        <label for="password" class="block text-sm font-bold text-emerald-900 ml-1">{{ 'AUTH.REGISTER.PASSWORD_LABEL' | translate }}</label>
-        <input id="password" type="password" formControlName="password" [placeholder]="'AUTH.REGISTER.PASSWORD_PLACEHOLDER' | translate" 
-               class="w-full px-5 py-3.5 bg-white border border-emerald-200 rounded-2xl text-emerald-950 placeholder-emerald-300 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-300" />
-        
-        @if (registerForm.get('password')?.invalid && registerForm.get('password')?.touched) {
-          <p class="text-red-500 text-xs font-semibold ml-2 mt-1">{{ 'AUTH.REGISTER.PASSWORD_ERROR_REQUIRED' | translate }}</p>
+        @if (successMessage()) {
+          <div class="bg-emerald-50 border-l-4 border-emerald-500 p-5 rounded-2xl text-emerald-800 text-sm font-semibold shadow-sm animate-fade-in">
+            {{ successMessage() }}
+          </div>
         }
-      </div>
 
-      <div class="pt-4">
-        <button type="submit" [disabled]="registerForm.invalid || isLoading()" 
-                class="w-full inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-white transition-all duration-300 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-2xl hover:from-emerald-600 hover:to-teal-600 focus:outline-none focus:ring-4 focus:ring-offset-2 focus:ring-emerald-400 shadow-lg shadow-emerald-500/30 hover:shadow-xl hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none">
-          @if (isLoading()) {
-            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-            {{ 'AUTH.REGISTER.BUTTON_LOADING' | translate }}
-          } @else {
-            {{ 'AUTH.REGISTER.BUTTON_SUBMIT' | translate }}
+        <div class="space-y-2">
+          <label for="username" class="block text-sm font-bold text-emerald-950 ml-1">{{ 'AUTH.REGISTER.USERNAME_LABEL' | translate }}</label>
+          <input id="username" type="text" formControlName="username" [placeholder]="'AUTH.REGISTER.USERNAME_PLACEHOLDER' | translate" 
+                 class="w-full px-6 py-4 bg-sage-50/50 border border-sage-200 rounded-2xl text-emerald-950 placeholder-sage-300 focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 focus:bg-white transition-all duration-300 shadow-sm" />
+          
+          @if (registerForm.get('username')?.invalid && registerForm.get('username')?.touched) {
+            <p class="text-red-500 text-xs font-bold ml-2 mt-1">{{ 'AUTH.REGISTER.USERNAME_ERROR_REQUIRED' | translate }}</p>
           }
-        </button>
-      </div>
+        </div>
 
-      <p class="text-center text-emerald-900/70 text-sm font-medium mt-6">
-        {{ 'AUTH.REGISTER.HAS_ACCOUNT' | translate }} 
-        <a routerLink="/login" class="text-emerald-600 font-bold hover:text-emerald-800 transition-colors hover:underline decoration-2 underline-offset-4">{{ 'AUTH.REGISTER.LOGIN_HERE' | translate }}</a>
-      </p>
-    </form>
+        <div class="space-y-2">
+          <label for="email" class="block text-sm font-bold text-emerald-950 ml-1">{{ 'AUTH.REGISTER.EMAIL_LABEL' | translate }}</label>
+          <input id="email" type="email" formControlName="email" [placeholder]="'AUTH.REGISTER.EMAIL_PLACEHOLDER' | translate" 
+                 class="w-full px-6 py-4 bg-sage-50/50 border border-sage-200 rounded-2xl text-emerald-950 placeholder-sage-300 focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 focus:bg-white transition-all duration-300 shadow-sm" />
+          
+          @if (registerForm.get('email')?.invalid && registerForm.get('email')?.touched) {
+            <p class="text-red-500 text-xs font-bold ml-2 mt-1">{{ 'AUTH.REGISTER.EMAIL_ERROR_INVALID' | translate }}</p>
+          }
+        </div>
+
+        <div class="space-y-2">
+          <label for="password" class="block text-sm font-bold text-emerald-950 ml-1">{{ 'AUTH.REGISTER.PASSWORD_LABEL' | translate }}</label>
+          <input id="password" type="password" formControlName="password" [placeholder]="'AUTH.REGISTER.PASSWORD_PLACEHOLDER' | translate" 
+                 class="w-full px-6 py-4 bg-sage-50/50 border border-sage-200 rounded-2xl text-emerald-950 placeholder-sage-300 focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 focus:bg-white transition-all duration-300 shadow-sm" />
+          
+          @if (registerForm.get('password')?.invalid && registerForm.get('password')?.touched) {
+            <p class="text-red-500 text-xs font-bold ml-2 mt-1">{{ 'AUTH.REGISTER.PASSWORD_ERROR_REQUIRED' | translate }}</p>
+          }
+        </div>
+
+        <div class="pt-6">
+          <button type="submit" [disabled]="registerForm.invalid || isLoading()" 
+                  class="w-full inline-flex items-center justify-center px-8 py-4.5 text-lg font-bold text-white transition-all duration-300 bg-emerald-900 hover:bg-emerald-950 rounded-2xl shadow-xl shadow-emerald-900/20 hover:shadow-2xl hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none">
+            @if (isLoading()) {
+              <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              {{ 'AUTH.REGISTER.BUTTON_LOADING' | translate }}
+            } @else {
+              {{ 'AUTH.REGISTER.BUTTON_SUBMIT' | translate }}
+            }
+          </button>
+        </div>
+
+        <p class="text-center text-sage-500 font-medium mt-8">
+          {{ 'AUTH.REGISTER.HAS_ACCOUNT' | translate }} 
+          <a routerLink="/login" class="text-emerald-700 font-bold hover:text-emerald-900 transition-colors hover:underline decoration-2 underline-offset-4">{{ 'AUTH.REGISTER.LOGIN_HERE' | translate }}</a>
+        </p>
+      </form>
+    </div>
   </div>
 </div>

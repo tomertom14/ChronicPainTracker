@@ -1,49 +1,83 @@
-<div
-  class="min-h-screen bg-gradient-to-br from-emerald-100 via-teal-100 to-stone-100 flex flex-col items-center justify-center font-sans p-6 animate-fade-in relative selection:bg-emerald-300/60">
-
-
-  <div class="max-w-3xl w-full text-center space-y-12 z-10 py-12">
-
-    <div class="space-y-4">
-      <h1 class="text-5xl md:text-6xl font-extrabold text-emerald-950 tracking-tighter drop-shadow-sm">
+<div class="min-h-[calc(100vh-80px)] bg-sage-50 font-sans selection:bg-emerald-200/60 pb-20">
+  
+  <!-- Header Section -->
+  <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10 pt-16 pb-12">
+    <div class="space-y-4 max-w-3xl animate-fade-in">
+      <h1 class="text-5xl md:text-6xl font-serif font-bold text-emerald-950 tracking-tight leading-tight">
         {{ greetingKey() | translate: { name: userName() } }}
       </h1>
-      <p class="text-xl md:text-2xl text-emerald-900/80 font-medium tracking-wide max-w-xl mx-auto">
+      <p class="text-xl md:text-2xl text-sage-600 font-medium leading-relaxed">
         {{ 'DASHBOARD.WELCOME' | translate }}
       </p>
     </div>
+  </div>
 
-    <div
-      class="bg-white rounded-[2.5rem] p-10 md:p-16 shadow-[0_15px_40px_rgb(0,0,0,0.06)] border border-emerald-100 relative overflow-hidden transition-all duration-500 hover:shadow-[0_15px_50px_rgb(16,185,129,0.1)]">
+  <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10 grid grid-cols-1 lg:grid-cols-12 gap-10">
+    
+    <!-- Left: Featured Prompt Card -->
+    <div class="lg:col-span-8 animate-fade-in" style="animation-delay: 0.1s">
+      <div class="bg-white rounded-[2.5rem] p-12 md:p-20 shadow-[0_20px_60px_rgb(0,0,0,0.03)] border border-sage-100 relative overflow-hidden group hover:shadow-[0_30px_70px_rgb(16,185,129,0.05)] transition-all duration-700">
+        
+        <!-- Premium decorative background -->
+        <div class="absolute top-0 right-0 -mr-24 -mt-24 w-80 h-80 rounded-full bg-emerald-50/50 blur-3xl group-hover:bg-emerald-100/50 transition-colors duration-700"></div>
+        <div class="absolute bottom-0 left-0 -ml-24 -mb-24 w-64 h-64 rounded-full bg-sand-50/50 blur-3xl"></div>
 
-      <div class="absolute top-0 right-0 -mr-16 -mt-16 w-56 h-56 rounded-full bg-emerald-100/70 blur-3xl"></div>
-      <div class="absolute bottom-0 left-0 -ml-16 -mb-16 w-48 h-48 rounded-full bg-teal-100/70 blur-3xl"></div>
+        <div class="relative z-10 flex flex-col items-center text-center space-y-12">
+          <div class="w-20 h-20 bg-emerald-50 rounded-3xl flex items-center justify-center text-emerald-700 shadow-inner border border-emerald-100/50">
+            <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z">
+              </path>
+            </svg>
+          </div>
 
-      <div class="relative z-10 flex flex-col items-center">
-        <div
-          class="w-16 h-16 bg-gradient-to-br from-emerald-200 to-teal-100 rounded-3xl flex items-center justify-center mb-10 text-emerald-700 shadow-md border border-emerald-200">
-          <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-              d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z">
-            </path>
-          </svg>
+          <p class="text-3xl md:text-4xl lg:text-5xl text-emerald-950 font-serif font-bold italic leading-tight tracking-tight max-w-2xl mx-auto">
+            "{{ dailyPrompt() | translate }}"
+          </p>
+          
+          <div class="w-16 h-1 bg-sand-200 rounded-full"></div>
         </div>
-
-        <p class="text-3xl md:text-4xl text-emerald-950 font-serif leading-tight italic drop-shadow-sm tracking-tight">
-          "{{ dailyPrompt() | translate }}"
-        </p>
       </div>
     </div>
 
-    <div class="pt-8 relative z-20">
-      <button (click)="onStartPractice()"
-        class="group relative inline-flex items-center justify-center px-12 py-5 text-xl font-bold text-white transition-all duration-300 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-2xl hover:from-emerald-600 hover:to-teal-600 focus:outline-none focus:ring-4 focus:ring-offset-2 focus:ring-emerald-400 shadow-xl shadow-emerald-500/30 hover:shadow-2xl hover:shadow-emerald-500/40 hover:-translate-y-1">
-        {{ 'DASHBOARD.PRACTICE_NOW' | translate }}
-        <svg class="w-6 h-6 ml-3.5 -mr-1.5 transition-transform group-hover:translate-x-2" fill="none"
-          stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-        </svg>
-      </button>
+    <!-- Right: Action Section -->
+    <div class="lg:col-span-4 flex flex-col gap-8 animate-fade-in" style="animation-delay: 0.2s">
+      <div class="bg-emerald-900 rounded-[2.5rem] p-10 text-white shadow-2xl shadow-emerald-900/20 flex flex-col justify-between min-h-[400px] group overflow-hidden relative">
+        <div class="absolute top-0 right-0 w-full h-full opacity-10 pointer-events-none">
+            <div class="absolute top-[-20%] right-[-20%] w-[80%] h-[80%] rounded-full bg-emerald-400 blur-[100px]"></div>
+        </div>
+
+        <div class="relative z-10 space-y-6">
+          <h3 class="text-3xl font-serif font-bold">{{ 'DASHBOARD.PRACTICE_NOW' | translate }}</h3>
+          <p class="text-emerald-100/70 font-medium leading-relaxed">
+            Take a moment to check in with yourself. A quick reflection can make a world of difference.
+          </p>
+        </div>
+
+        <div class="relative z-10 pt-10">
+          <button (click)="onStartPractice()"
+            class="w-full group inline-flex items-center justify-center px-10 py-5 text-xl font-bold text-emerald-950 transition-all duration-300 bg-sand-100 rounded-2xl hover:bg-white focus:outline-none focus:ring-4 focus:ring-sand-300 shadow-xl shadow-black/10 hover:-translate-y-1">
+            {{ 'DASHBOARD.PRACTICE_NOW' | translate }}
+            <svg class="w-6 h-6 ml-3 transition-transform group-hover:translate-x-2" fill="none"
+              stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Optional stats or smaller card -->
+      <div class="bg-white rounded-[2rem] p-8 border border-sage-100 shadow-sm flex items-center gap-6 group cursor-default">
+          <div class="w-14 h-14 bg-sage-50 rounded-2xl flex items-center justify-center text-emerald-800 transition-colors group-hover:bg-emerald-50">
+              <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+              </svg>
+          </div>
+          <div>
+              <p class="text-sage-400 text-sm font-bold uppercase tracking-widest">Consistency</p>
+              <p class="text-emerald-950 font-serif font-bold text-xl">Keep the streak</p>
+          </div>
+      </div>
     </div>
 
   </div>

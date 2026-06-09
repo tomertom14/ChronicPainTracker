@@ -1,3 +1,84 @@
 /* You can add global styles to this file, and also import other style files */
 
 @import 'tailwindcss';
+
+@theme {
+  --font-sans: "Inter", "ui-sans-serif", "system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "Helvetica Neue", "Arial", "sans-serif";
+  --font-serif: "Playfair Display", "ui-serif", "Georgia", "Cambria", "Times New Roman", "Times", "serif";
+
+  --color-emerald-50: #f0fdf4;
+  --color-emerald-100: #dcfce7;
+  --color-emerald-200: #bbf7d0;
+  --color-emerald-300: #86efac;
+  --color-emerald-400: #4ade80;
+  --color-emerald-500: #22c55e;
+  --color-emerald-600: #16a34a;
+  --color-emerald-700: #15803d;
+  --color-emerald-800: #166534;
+  --color-emerald-900: #14532d;
+  --color-emerald-950: #052e16;
+
+  --color-sage-50: #f8faf9;
+  --color-sage-100: #f1f5f3;
+  --color-sage-200: #e3eae7;
+  --color-sage-300: #cbdad3;
+  --color-sage-400: #a3beb2;
+  --color-sage-500: #7e9c8f;
+  --color-sage-600: #647f73;
+  --color-sage-700: #51665d;
+  --color-sage-800: #42524b;
+  --color-sage-900: #38433e;
+  --color-sage-950: #1f2623;
+
+  --color-sand-50: #fefcf6;
+  --color-sand-100: #fcf7e9;
+  --color-sand-200: #f7edd0;
+  --color-sand-300: #f1dea2;
+  --color-sand-400: #e9c669;
+  --color-sand-500: #dfac3c;
+  --color-sand-600: #c58d2e;
+  --color-sand-700: #a36d28;
+  --color-sand-800: #855926;
+  --color-sand-900: #704c24;
+  --color-sand-950: #402a13;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-sage-50 text-sage-900 font-sans;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif;
+  }
+
+  ::selection {
+    @apply bg-emerald-200 text-emerald-950;
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes wave {
+  0% { transform: translateX(0) translateZ(0) scaleY(1); }
+  50% { transform: translateX(-25%) translateZ(0) scaleY(0.8); }
+  100% { transform: translateX(-50%) translateZ(0) scaleY(1); }
+}
+
+.animate-wave {
+  animation: wave 10s linear infinite;
+  width: 200%;
+}
