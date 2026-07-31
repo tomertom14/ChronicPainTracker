@@ -2,6 +2,7 @@ import { Component, OnInit, inject, signal, Inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { DOCUMENT } from '@angular/common';
 import { WarmupService } from './core/services/warmup';
+import { ReminderService } from './core/services/reminder.service';
 import { StartupLoaderComponent } from './core/startup-loader';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { NavbarComponent } from './core/layout/navbar/navbar';
@@ -15,6 +16,7 @@ import { NavbarComponent } from './core/layout/navbar/navbar';
 export class App implements OnInit {
   protected readonly title = signal('ChronicPainTrackerUI');
   public warmupService = inject(WarmupService);
+  private reminderService = inject(ReminderService);
   public currentLang = signal('en');
 
   constructor(
@@ -32,6 +34,7 @@ export class App implements OnInit {
 
   ngOnInit(): void {
     this.warmupService.initiateWarmup();
+    this.reminderService.startWatching();
   }
 
   private setLanguage(lang: string): void {

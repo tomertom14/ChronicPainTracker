@@ -1,0 +1,125 @@
+<div class="min-h-[calc(100vh-80px)] bg-paper-100 flex items-start md:items-center justify-center font-sans py-12 px-4">
+
+  <div class="w-full max-w-3xl card-paper p-8 md:p-14 animate-fade-in">
+
+    <div class="space-y-3 mb-10">
+      <h1 class="text-4xl md:text-5xl font-serif font-bold text-ink-900 tracking-tight">{{ 'PAIN.TITLE' | translate }}</h1>
+      <p class="text-lg text-ink-500 font-medium">{{ 'PAIN.SUBTITLE' | translate }}</p>
+    </div>
+
+    @if (errorMessage()) {
+      <div class="bg-red-50 border-l-4 border-red-500 p-5 rounded-2xl text-red-700 text-sm font-semibold shadow-sm mb-8 animate-fade-in">
+        {{ errorMessage() }}
+      </div>
+    }
+
+    <div class="space-y-10">
+
+      <!-- Intensity -->
+      <div class="space-y-4">
+        <div class="flex justify-between items-center">
+          <label class="text-sm font-bold text-ink-900 uppercase tracking-wide">{{ 'PAIN.INTENSITY' | translate }}</label>
+          <span class="text-sm font-bold text-ink-900 bg-amber-200 px-4 py-1.5 rounded-full">{{ intensity() }} / 10</span>
+        </div>
+        <input type="range" min="0" max="10" [(ngModel)]="intensity"
+               class="w-full h-1 bg-paper-200 rounded-full appearance-none cursor-pointer accent-clay-500">
+      </div>
+
+      <!-- Body locations -->
+      <div class="space-y-4">
+        <label class="block text-sm font-bold text-ink-900 uppercase tracking-wide">{{ 'PAIN.LOCATIONS' | translate }}</label>
+        <div class="flex flex-wrap gap-3">
+          @for (loc of commonLocations; track loc) {
+            <button type="button" (click)="toggleLocation(loc)"
+                    [class.bg-clay-500]="selectedLocations().includes(loc)"
+                    [class.text-white]="selectedLocations().includes(loc)"
+                    [class.bg-paper-100]="!selectedLocations().includes(loc)"
+                    [class.text-ink-700]="!selectedLocations().includes(loc)"
+                    class="px-5 py-2.5 rounded-full font-semibold text-sm border border-paper-200 transition-all">
+              {{ loc }}
+            </button>
+          }
+          @for (loc of selectedLocations(); track loc) {
+            @if (!commonLocations.includes(loc)) {
+              <button type="button" (click)="toggleLocation(loc)" class="px-5 py-2.5 rounded-full font-semibold text-sm bg-clay-500 text-white border border-paper-200">
+                {{ loc }}
+              </button>
+            }
+          }
+        </div>
+        <div class="flex gap-3">
+          <input type="text" [ngModel]="newLocation()" (ngModelChange)="newLocation.set($event)"
+                 (keydown.enter)="$event.preventDefault(); addCustomLocation()"
+                 [placeholder]="'PAIN.ADD_LOCATION' | translate"
+                 class="input-warm flex-1">
+          <button type="button" (click)="addCustomLocation()" class="px-6 py-4 bg-ink-900 text-white font-bold rounded-2xl hover:bg-ink-800 transition-all">{{ 'PRACTICE.ADD_BTN' | translate }}</button>
+        </div>
+      </div>
+
+      <!-- Pain type -->
+      <div class="space-y-4">
+        <label class="block text-sm font-bold text-ink-900 uppercase tracking-wide">{{ 'PAIN.TYPE' | translate }}</label>
+        <div class="flex flex-wrap gap-3">
+          @for (type of commonTypes; track type) {
+            <button type="button" (click)="selectType(type)"
+                    [class.bg-amber-400]="painType() === type"
+                    [class.text-ink-900]="painType() === type"
+                    [class.bg-paper-100]="painType() !== type"
+                    [class.text-ink-700]="painType() !== type"
+                    class="px-5 py-2.5 rounded-full font-semibold text-sm border border-paper-200 transition-all">
+              {{ type }}
+            </button>
+          }
+        </div>
+        <input type="text" [ngModel]="painType()" (ngModelChange)="painType.set($event)"
+               [placeholder]="'PAIN.TYPE_PLACEHOLDER' | translate" class="input-warm">
+      </div>
+
+      <!-- Medication -->
+      <div class="space-y-3">
+        <label class="block text-sm font-bold text-ink-900 uppercase tracking-wide">{{ 'PAIN.MEDICATION' | translate }}</label>
+        <input type="text" [ngModel]="medicationTaken()" (ngModelChange)="medicationTaken.set($event)"
+               [placeholder]="'PAIN.MEDICATION_PLACEHOLDER' | translate" class="input-warm">
+      </div>
+
+      <!-- Sleep -->
+      <div class="space-y-4">
+        <label class="flex items-center gap-3 cursor-pointer">
+          <input type="checkbox" [ngModel]="trackSleep()" (ngModelChange)="trackSleep.set($event)" class="w-5 h-5 accent-clay-500">
+          <span class="text-sm font-bold text-ink-900 uppercase tracking-wide">{{ 'PAIN.TRACK_SLEEP' | translate }}</span>
+        </label>
+        @if (trackSleep()) {
+          <div class="flex justify-between items-center">
+            <input type="range" min="0" max="10" [(ngModel)]="sleepQuality"
+                   class="w-full h-1 bg-paper-200 rounded-full appearance-none cursor-pointer accent-amber-500 mr-4">
+            <span class="text-sm font-bold text-ink-900 bg-paper-200 px-4 py-1.5 rounded-full whitespace-nowrap">{{ sleepQuality() }} / 10</span>
+          </div>
+        }
+      </div>
+
+      <!-- Notes -->
+      <div class="space-y-3">
+        <label class="block text-sm font-bold text-ink-900 uppercase tracking-wide">{{ 'PAIN.NOTES' | translate }}</label>
+        <textarea rows="3" [ngModel]="notes()" (ngModelChange)="notes.set($event)"
+                  [placeholder]="'PAIN.NOTES_PLACEHOLDER' | translate"
+                  class="w-full px-6 py-5 text-lg bg-paper-50 border border-paper-200 rounded-3xl outline-none focus:ring-4 focus:ring-clay-500/10 focus:bg-white focus:border-clay-400 resize-none transition-all text-ink-900 placeholder:text-ink-200"></textarea>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex gap-4 pt-4">
+        <button type="button" (click)="cancel()" class="flex-1 py-4 text-base font-bold text-ink-500 hover:text-clay-700 transition-all uppercase tracking-widest">
+          {{ 'PRACTICE.CLOSE' | translate }}
+        </button>
+        <button type="button" (click)="submit()" [disabled]="isSaving()" class="btn-primary flex-1">
+          @if (isSaving()) {
+            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+          }
+          {{ 'PAIN.SAVE' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

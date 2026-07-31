@@ -1,21 +1,34 @@
-import { Component, OnInit, signal, computed } from '@angular/core';
+import { Component, OnInit, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../../core/auth/auth.service';
+import { PracticeService } from '../../core/services/practice.service';
+import { ReminderService } from '../../core/services/reminder.service';
 import { DAILY_PROMPTS } from './prompts.data';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, TranslateModule],
+  imports: [CommonModule, FormsModule, RouterLink, TranslateModule],
   templateUrl: './dashboard.html'
 })
 export class DashboardComponent implements OnInit {
+  private reminderService = inject(ReminderService);
+
   userName = signal<string>('Guest');
   dailyPrompt = signal<string>('');
   greetingKey = signal<string>('DASHBOARD.GOOD_MORNING');
-  
+
+  streakLoaded = signal<boolean>(false);
+  currentStreak = signal<number>(0);
+
+  reminderEnabled = this.reminderService.enabled;
+  reminderHour = this.reminderService.hour;
+  reminderHours = Array.from({ length: 24 }, (_, i) => i);
+
   // Example of a 'computed' signal - it updates automatically when userName changes
   greeting = computed(() => {
     const hour = new Date().getHours();
@@ -27,7 +40,8 @@ export class DashboardComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private router: Router,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private practiceService: PracticeService
   ) {}
 
   ngOnInit(): void {
@@ -37,6 +51,14 @@ export class DashboardComponent implements OnInit {
     }
     this.setDailyPrompt();
     this.updateGreetingKey();
+
+    this.practiceService.getInsights().subscribe({
+      next: (insights) => {
+        this.currentStreak.set(insights.currentStreak);
+        this.streakLoaded.set(true);
+      },
+      error: () => this.streakLoaded.set(false)
+    });
   }
 
   updateGreetingKey(): void {
@@ -59,4 +81,15 @@ export class DashboardComponent implements OnInit {
     this.router.navigate(['/practice']);
   }
 
+  toggleReminder(): void {
+    if (this.reminderEnabled()) {
+      this.reminderService.disable();
+    } else {
+      this.reminderService.enableAtCurrentHour();
+    }
+  }
+
+  onReminderHourChange(hour: string): void {
+    this.reminderService.setHour(Number(hour));
+  }
 }

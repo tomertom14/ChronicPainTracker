@@ -1,29 +1,29 @@
-<div class="min-h-[calc(100vh-80px)] bg-sage-50 font-sans selection:bg-emerald-200/60 pb-20">
-  
+<div class="min-h-[calc(100vh-80px)] bg-paper-100 font-sans selection:bg-clay-200/60 pb-20">
+
   <!-- Header Section -->
   <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10 pt-16 pb-12">
     <div class="space-y-4 max-w-3xl animate-fade-in">
-      <h1 class="text-5xl md:text-6xl font-serif font-bold text-emerald-950 tracking-tight leading-tight">
+      <h1 class="text-5xl md:text-6xl font-serif font-bold text-ink-900 tracking-tight leading-tight">
         {{ greetingKey() | translate: { name: userName() } }}
       </h1>
-      <p class="text-xl md:text-2xl text-sage-600 font-medium leading-relaxed">
+      <p class="text-xl md:text-2xl text-ink-500 font-medium leading-relaxed">
         {{ 'DASHBOARD.WELCOME' | translate }}
       </p>
     </div>
   </div>
 
   <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10 grid grid-cols-1 lg:grid-cols-12 gap-10">
-    
+
     <!-- Left: Featured Prompt Card -->
     <div class="lg:col-span-8 animate-fade-in" style="animation-delay: 0.1s">
-      <div class="bg-white rounded-[2.5rem] p-12 md:p-20 shadow-[0_20px_60px_rgb(0,0,0,0.03)] border border-sage-100 relative overflow-hidden group hover:shadow-[0_30px_70px_rgb(16,185,129,0.05)] transition-all duration-700">
-        
+      <div class="bg-white rounded-[2.5rem] p-12 md:p-20 shadow-[0_20px_60px_rgb(43,33,26,0.05)] border border-paper-200 relative overflow-hidden group hover:shadow-[0_30px_70px_rgb(194,100,59,0.08)] transition-all duration-700">
+
         <!-- Premium decorative background -->
-        <div class="absolute top-0 right-0 -mr-24 -mt-24 w-80 h-80 rounded-full bg-emerald-50/50 blur-3xl group-hover:bg-emerald-100/50 transition-colors duration-700"></div>
-        <div class="absolute bottom-0 left-0 -ml-24 -mb-24 w-64 h-64 rounded-full bg-sand-50/50 blur-3xl"></div>
+        <div class="absolute top-0 right-0 -mr-24 -mt-24 w-80 h-80 rounded-full bg-clay-50/60 blur-3xl group-hover:bg-clay-100/60 transition-colors duration-700"></div>
+        <div class="absolute bottom-0 left-0 -ml-24 -mb-24 w-64 h-64 rounded-full bg-amber-50/60 blur-3xl"></div>
 
         <div class="relative z-10 flex flex-col items-center text-center space-y-12">
-          <div class="w-20 h-20 bg-emerald-50 rounded-3xl flex items-center justify-center text-emerald-700 shadow-inner border border-emerald-100/50">
+          <div class="w-20 h-20 bg-clay-50 rounded-3xl flex items-center justify-center text-clay-700 shadow-inner border border-clay-100/50">
             <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                 d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z">
@@ -31,32 +31,32 @@
             </svg>
           </div>
 
-          <p class="text-3xl md:text-4xl lg:text-5xl text-emerald-950 font-serif font-bold italic leading-tight tracking-tight max-w-2xl mx-auto">
+          <p class="text-3xl md:text-4xl lg:text-5xl text-ink-900 font-serif font-bold italic leading-tight tracking-tight max-w-2xl mx-auto">
             "{{ dailyPrompt() | translate }}"
           </p>
-          
-          <div class="w-16 h-1 bg-sand-200 rounded-full"></div>
+
+          <div class="w-16 h-1 bg-amber-300 rounded-full"></div>
         </div>
       </div>
     </div>
 
     <!-- Right: Action Section -->
     <div class="lg:col-span-4 flex flex-col gap-8 animate-fade-in" style="animation-delay: 0.2s">
-      <div class="bg-emerald-900 rounded-[2.5rem] p-10 text-white shadow-2xl shadow-emerald-900/20 flex flex-col justify-between min-h-[400px] group overflow-hidden relative">
+      <div class="bg-ink-900 rounded-[2.5rem] p-10 text-white shadow-2xl shadow-ink-900/20 flex flex-col justify-between min-h-[400px] group overflow-hidden relative">
         <div class="absolute top-0 right-0 w-full h-full opacity-10 pointer-events-none">
-            <div class="absolute top-[-20%] right-[-20%] w-[80%] h-[80%] rounded-full bg-emerald-400 blur-[100px]"></div>
+            <div class="absolute top-[-20%] right-[-20%] w-[80%] h-[80%] rounded-full bg-clay-400 blur-[100px]"></div>
         </div>
 
         <div class="relative z-10 space-y-6">
           <h3 class="text-3xl font-serif font-bold">{{ 'DASHBOARD.PRACTICE_NOW' | translate }}</h3>
-          <p class="text-emerald-100/70 font-medium leading-relaxed">
+          <p class="text-paper-200/70 font-medium leading-relaxed">
             Take a moment to check in with yourself. A quick reflection can make a world of difference.
           </p>
         </div>
 
         <div class="relative z-10 pt-10">
           <button (click)="onStartPractice()"
-            class="w-full group inline-flex items-center justify-center px-10 py-5 text-xl font-bold text-emerald-950 transition-all duration-300 bg-sand-100 rounded-2xl hover:bg-white focus:outline-none focus:ring-4 focus:ring-sand-300 shadow-xl shadow-black/10 hover:-translate-y-1">
+            class="w-full group inline-flex items-center justify-center px-10 py-5 text-xl font-bold text-ink-900 transition-all duration-300 bg-amber-200 rounded-2xl hover:bg-amber-100 focus:outline-none focus:ring-4 focus:ring-amber-300/60 shadow-xl shadow-black/10 hover:-translate-y-1">
             {{ 'DASHBOARD.PRACTICE_NOW' | translate }}
             <svg class="w-6 h-6 ml-3 transition-transform group-hover:translate-x-2" fill="none"
               stroke="currentColor" viewBox="0 0 24 24">
@@ -66,17 +66,68 @@
         </div>
       </div>
 
-      <!-- Optional stats or smaller card -->
-      <div class="bg-white rounded-[2rem] p-8 border border-sage-100 shadow-sm flex items-center gap-6 group cursor-default">
-          <div class="w-14 h-14 bg-sage-50 rounded-2xl flex items-center justify-center text-emerald-800 transition-colors group-hover:bg-emerald-50">
+      <!-- Streak / Consistency card -->
+      <a routerLink="/history" class="card-paper p-8 flex items-center gap-6 group cursor-pointer hover:border-clay-200 hover:shadow-[0_20px_60px_rgb(194,100,59,0.08)] transition-all">
+          <div class="w-14 h-14 bg-amber-50 rounded-2xl flex items-center justify-center text-clay-700 transition-colors group-hover:bg-clay-50">
               <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
               </svg>
           </div>
           <div>
-              <p class="text-sage-400 text-sm font-bold uppercase tracking-widest">Consistency</p>
-              <p class="text-emerald-950 font-serif font-bold text-xl">Keep the streak</p>
+              @if (streakLoaded()) {
+                @if (currentStreak() > 0) {
+                  <p class="text-ink-400 text-sm font-bold uppercase tracking-widest">Consistency</p>
+                  <p class="text-ink-900 font-serif font-bold text-xl">{{ currentStreak() }}-day streak</p>
+                } @else {
+                  <p class="text-ink-400 text-sm font-bold uppercase tracking-widest">Consistency</p>
+                  <p class="text-ink-900 font-serif font-bold text-xl">Start your streak today</p>
+                }
+              } @else {
+                <p class="text-ink-400 text-sm font-bold uppercase tracking-widest">Consistency</p>
+                <p class="text-ink-900 font-serif font-bold text-xl">Keep the streak</p>
+              }
           </div>
+      </a>
+
+      <!-- Log Pain quick action -->
+      <a routerLink="/pain/new" class="card-paper p-8 flex items-center gap-6 group cursor-pointer hover:border-clay-200 hover:shadow-[0_20px_60px_rgb(194,100,59,0.08)] transition-all">
+          <div class="w-14 h-14 bg-clay-50 rounded-2xl flex items-center justify-center text-clay-700 transition-colors group-hover:bg-amber-50">
+              <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+          </div>
+          <div>
+              <p class="text-ink-400 text-sm font-bold uppercase tracking-widest">{{ 'PAIN.LOG_NEW' | translate }}</p>
+              <p class="text-ink-900 font-serif font-bold text-xl">{{ 'DASHBOARD.LOG_PAIN_SUBTITLE' | translate }}</p>
+          </div>
+      </a>
+
+      <!-- Daily reminder -->
+      <div class="card-paper p-8 space-y-4">
+        <div class="flex items-center justify-between gap-4">
+          <div>
+            <p class="text-ink-400 text-sm font-bold uppercase tracking-widest">{{ 'DASHBOARD.REMINDER' | translate }}</p>
+            <p class="text-ink-900 font-serif font-bold text-lg">{{ 'DASHBOARD.REMINDER_SUBTITLE' | translate }}</p>
+          </div>
+          <button (click)="toggleReminder()" type="button"
+                  [class.bg-clay-500]="reminderEnabled()"
+                  [class.bg-paper-300]="!reminderEnabled()"
+                  class="relative w-14 h-8 rounded-full transition-colors duration-300 flex-shrink-0">
+            <span class="absolute top-1 w-6 h-6 bg-white rounded-full shadow-md transition-all duration-300"
+                  [class.left-7]="reminderEnabled()" [class.left-1]="!reminderEnabled()"></span>
+          </button>
+        </div>
+        @if (reminderEnabled()) {
+          <div class="flex items-center gap-3 animate-fade-in">
+            <span class="text-sm font-semibold text-ink-600">{{ 'DASHBOARD.REMINDER_AT' | translate }}</span>
+            <select [ngModel]="reminderHour()" (ngModelChange)="onReminderHourChange($event)"
+                    class="px-4 py-2 bg-paper-100 border border-paper-300 rounded-xl font-bold text-ink-900 text-sm outline-none focus:border-clay-400">
+              @for (h of reminderHours; track h) {
+                <option [value]="h">{{ h }}:00</option>
+              }
+            </select>
+          </div>
+        }
       </div>
     </div>
 

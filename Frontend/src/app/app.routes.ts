@@ -4,16 +4,20 @@ import { RegisterComponent } from './features/auth/register/register';
 import { DashboardComponent } from './features/dashboard/dashboard';
 import { VerifyEmailComponent } from './features/auth/verify-email/verify-email';
 import { PracticeComponent } from './features/practice/practice';
-import { authGuard } from './core/guards/auth-guard'; 
+import { HistoryComponent } from './features/history/history';
+import { PainLogComponent } from './features/pain/pain-log';
+import { authGuard } from './core/guards/auth-guard';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component:  RegisterComponent},
   { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] },
-  
+
   { path: 'verify-email', component: VerifyEmailComponent },
   { path: 'practice', component: PracticeComponent, canActivate: [authGuard] },
-  
+  { path: 'history', component: HistoryComponent, canActivate: [authGuard] },
+  { path: 'pain/new', component: PainLogComponent, canActivate: [authGuard] },
+
   { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
   { path: '**', redirectTo: '/login' }
 ];

@@ -1,6 +1,8 @@
 {
   "APP": {
-    "SWITCH_LANG": "עברית"
+    "SWITCH_LANG": "עברית",
+    "DASHBOARD": "Dashboard",
+    "HISTORY": "History"
   },
   "EMOTIONS": {
     "Anger": "Anger",
@@ -53,6 +55,10 @@
     "PRACTICE_NOW": "Start Emotional Check-in",
     "LOGOUT": "Logout",
     "WELCOME": "Welcome to your safe space for emotional check-ins.",
+    "LOG_PAIN_SUBTITLE": "Quick physical check-in",
+    "REMINDER": "Daily reminder",
+    "REMINDER_SUBTITLE": "A gentle nudge to check in",
+    "REMINDER_AT": "Remind me at",
     "PROMPTS": {
       "P1": "Name one sound you can hear right now, and just listen to it for 10 seconds.",
       "P2": "Notice the feeling of your feet resting on the floor. You are supported.",
@@ -126,5 +132,40 @@
       "ERROR_TITLE": "Verification Failed",
       "BACK_TO_LOGIN": "Back to Login"
     }
+  },
+  "HISTORY": {
+    "TITLE": "Your Journal",
+    "SUBTITLE": "Look back at your check-ins and pain entries, and notice your patterns.",
+    "TAB_PRACTICE": "Emotional Check-ins",
+    "TAB_PAIN": "Pain Log",
+    "TOTAL_SESSIONS": "Total check-ins",
+    "CURRENT_STREAK": "Current streak",
+    "LONGEST_STREAK": "Longest streak",
+    "LAST_PRACTICED": "Last check-in",
+    "TOP_EMOTIONS": "Most frequent emotions",
+    "TREND": "Intensity over time",
+    "EMPTY_PRACTICE": "No check-ins yet. Start your first emotional check-in from the dashboard.",
+    "EMPTY_PAIN": "No pain entries yet. Log your first entry to start tracking patterns.",
+    "DAYS": "days"
+  },
+  "PAIN": {
+    "TITLE": "Log Pain",
+    "SUBTITLE": "A quick physical check-in. Every field is optional except intensity.",
+    "LOG_NEW": "Log Pain",
+    "TOTAL_ENTRIES": "Total entries",
+    "TOP_LOCATIONS": "Most affected areas",
+    "INTENSITY": "Intensity",
+    "LOCATIONS": "Where does it hurt?",
+    "ADD_LOCATION": "Add another area...",
+    "TYPE": "What does it feel like?",
+    "TYPE_PLACEHOLDER": "Or describe it in your own words",
+    "MEDICATION": "Medication taken",
+    "MEDICATION_PLACEHOLDER": "e.g. Ibuprofen 400mg",
+    "TRACK_SLEEP": "Log last night's sleep quality",
+    "SLEEP": "Sleep quality",
+    "NOTES": "Notes",
+    "NOTES_PLACEHOLDER": "Anything else worth remembering about today...",
+    "SAVE": "Save entry",
+    "ERROR_ALERT": "There was a problem saving your entry. Please try again."
   }
 }

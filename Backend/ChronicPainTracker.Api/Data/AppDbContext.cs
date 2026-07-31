@@ -19,4 +19,5 @@ public class AppDbContext : DbContext
 
     public DbSet<PracticeSession> PracticeSessions { get; set; }
     public DbSet<EmotionEntry> EmotionEntries { get; set; }
+    public DbSet<PainEntry> PainEntries { get; set; }
 }

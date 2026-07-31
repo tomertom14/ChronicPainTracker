@@ -1,0 +1,215 @@
+<div class="min-h-[calc(100vh-80px)] bg-paper-100 font-sans pb-24">
+
+  <div class="max-w-6xl mx-auto px-6 sm:px-8 lg:px-10 pt-16 pb-10">
+    <div class="space-y-4 max-w-3xl animate-fade-in">
+      <h1 class="text-5xl md:text-6xl font-serif font-bold text-ink-900 tracking-tight leading-tight">
+        {{ 'HISTORY.TITLE' | translate }}
+      </h1>
+      <p class="text-xl text-ink-500 font-medium leading-relaxed">
+        {{ 'HISTORY.SUBTITLE' | translate }}
+      </p>
+    </div>
+  </div>
+
+  <div class="max-w-6xl mx-auto px-6 sm:px-8 lg:px-10">
+
+    <!-- Tabs -->
+    <div class="inline-flex gap-2 p-1.5 bg-white rounded-2xl border border-paper-200 shadow-sm mb-10">
+      <button (click)="setTab('practice')"
+              [class.bg-clay-500]="activeTab() === 'practice'"
+              [class.text-white]="activeTab() === 'practice'"
+              [class.text-ink-600]="activeTab() !== 'practice'"
+              class="px-6 py-3 rounded-xl font-bold text-sm transition-all duration-300">
+        {{ 'HISTORY.TAB_PRACTICE' | translate }}
+      </button>
+      <button (click)="setTab('pain')"
+              [class.bg-clay-500]="activeTab() === 'pain'"
+              [class.text-white]="activeTab() === 'pain'"
+              [class.text-ink-600]="activeTab() !== 'pain'"
+              class="px-6 py-3 rounded-xl font-bold text-sm transition-all duration-300">
+        {{ 'HISTORY.TAB_PAIN' | translate }}
+      </button>
+    </div>
+
+    <!-- ===================== PRACTICE TAB ===================== -->
+    @if (activeTab() === 'practice') {
+      <div class="animate-fade-in space-y-10">
+
+        @if (!loadingPractice() && practiceInsights(); as insights) {
+
+          <!-- Stat row -->
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-5">
+            <div class="card-paper p-6">
+              <p class="text-ink-400 text-xs font-bold uppercase tracking-widest mb-2">{{ 'HISTORY.TOTAL_SESSIONS' | translate }}</p>
+              <p class="text-3xl font-serif font-bold text-ink-900">{{ insights.totalSessions }}</p>
+            </div>
+            <div class="card-paper p-6">
+              <p class="text-ink-400 text-xs font-bold uppercase tracking-widest mb-2">{{ 'HISTORY.CURRENT_STREAK' | translate }}</p>
+              <p class="text-3xl font-serif font-bold text-clay-600">{{ insights.currentStreak }} <span class="text-base text-ink-400 font-sans font-semibold">{{ 'HISTORY.DAYS' | translate }}</span></p>
+            </div>
+            <div class="card-paper p-6">
+              <p class="text-ink-400 text-xs font-bold uppercase tracking-widest mb-2">{{ 'HISTORY.LONGEST_STREAK' | translate }}</p>
+              <p class="text-3xl font-serif font-bold text-ink-900">{{ insights.longestStreak }} <span class="text-base text-ink-400 font-sans font-semibold">{{ 'HISTORY.DAYS' | translate }}</span></p>
+            </div>
+            <div class="card-paper p-6">
+              <p class="text-ink-400 text-xs font-bold uppercase tracking-widest mb-2">{{ 'HISTORY.LAST_PRACTICED' | translate }}</p>
+              <p class="text-xl font-serif font-bold text-ink-900">{{ insights.lastPracticedAt ? formatDate(insights.lastPracticedAt) : '—' }}</p>
+            </div>
+          </div>
+
+          @if (practiceChart(); as chart) {
+            <div class="card-paper p-8 md:p-10">
+              <p class="text-ink-400 text-xs font-bold uppercase tracking-widest mb-6">{{ 'HISTORY.TREND' | translate }}</p>
+              <svg viewBox="0 0 100 32" preserveAspectRatio="none" class="w-full h-40">
+                <polygon [attr.points]="chart.areaPoints" fill="var(--color-clay-100)" opacity="0.6"></polygon>
+                <polyline [attr.points]="chart.points" fill="none" stroke="var(--color-clay-500)" stroke-width="1" vector-effect="non-scaling-stroke"></polyline>
+              </svg>
+              <div class="flex justify-between text-xs font-bold text-ink-400 uppercase tracking-wide mt-2">
+                @for (l of chart.labels; track l.x) {
+                  <span>{{ l.label }}</span>
+                }
+              </div>
+            </div>
+          }
+
+          @if (insights.topEmotions.length > 0) {
+            <div>
+              <p class="text-ink-400 text-xs font-bold uppercase tracking-widest mb-4">{{ 'HISTORY.TOP_EMOTIONS' | translate }}</p>
+              <div class="flex flex-wrap gap-3">
+                @for (e of insights.topEmotions; track e.name) {
+                  <span class="px-5 py-2.5 bg-amber-100 text-amber-800 border border-amber-200 rounded-full font-bold text-sm">
+                    {{ getEmotionName(e.name) }} · {{ e.count }}× · avg {{ e.averageIntensity }}
+                  </span>
+                }
+              </div>
+            </div>
+          }
+        }
+
+        <!-- Session list -->
+        <div class="space-y-5">
+          @for (session of practiceSessions(); track session.id) {
+            <div class="card-paper p-6 md:p-8">
+              <button (click)="toggleSession(session.id)" class="w-full flex items-center justify-between gap-6 text-left">
+                <div class="space-y-1">
+                  <p class="text-ink-400 text-xs font-bold uppercase tracking-widest">{{ formatDate(session.createdAt) }} · {{ formatTime(session.createdAt) }}</p>
+                  <p class="text-lg font-serif font-bold text-ink-900">{{ topEmotionsFor(session) }}</p>
+                </div>
+                <svg class="w-6 h-6 text-ink-400 flex-shrink-0 transition-transform" [class.rotate-180]="expandedSessionId() === session.id" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+              </button>
+
+              @if (expandedSessionId() === session.id) {
+                <div class="mt-8 pt-8 border-t border-paper-200 space-y-8 animate-fade-in">
+                  @for (emotion of session.emotions; track emotion.id) {
+                    <div class="space-y-4">
+                      <div class="flex items-center gap-3">
+                        <span class="text-xl font-serif font-bold text-ink-900">{{ getEmotionName(emotion.emotionName) }}</span>
+                        <span class="text-xs font-bold text-ink-900 bg-amber-200 px-3 py-1 rounded-full">{{ emotion.intensity }} / 10</span>
+                      </div>
+                      @if (emotion.whenOccurred || emotion.regardingWhoWhat || emotion.bodyLocation || emotion.physicalSensation || emotion.duration) {
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                          @if (emotion.whenOccurred) { <p><span class="font-bold text-ink-600">{{ 'PRACTICE.Q1' | translate }}</span> {{ emotion.whenOccurred }}</p> }
+                          @if (emotion.regardingWhoWhat) { <p><span class="font-bold text-ink-600">{{ 'PRACTICE.Q2' | translate }}</span> {{ emotion.regardingWhoWhat }}</p> }
+                          @if (emotion.bodyLocation) { <p><span class="font-bold text-ink-600">{{ 'PRACTICE.Q3' | translate }}</span> {{ emotion.bodyLocation }}</p> }
+                          @if (emotion.physicalSensation) { <p><span class="font-bold text-ink-600">{{ 'PRACTICE.Q4' | translate }}</span> {{ emotion.physicalSensation }}</p> }
+                          @if (emotion.duration) { <p><span class="font-bold text-ink-600">{{ 'PRACTICE.Q5' | translate }}</span> {{ emotion.duration }}</p> }
+                        </div>
+                      }
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          } @empty {
+            <div class="card-paper p-14 text-center">
+              <p class="text-ink-500 font-medium text-lg">{{ 'HISTORY.EMPTY_PRACTICE' | translate }}</p>
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+    <!-- ===================== PAIN TAB ===================== -->
+    @if (activeTab() === 'pain') {
+      <div class="animate-fade-in space-y-10">
+
+        <div class="flex justify-end">
+          <a routerLink="/pain/new" class="btn-primary">
+            {{ 'PAIN.LOG_NEW' | translate }}
+          </a>
+        </div>
+
+        @if (!loadingPain() && painInsights(); as insights) {
+          @if (insights.totalEntries > 0) {
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div class="card-paper p-6">
+                <p class="text-ink-400 text-xs font-bold uppercase tracking-widest mb-2">{{ 'PAIN.TOTAL_ENTRIES' | translate }}</p>
+                <p class="text-3xl font-serif font-bold text-ink-900">{{ insights.totalEntries }}</p>
+              </div>
+              @if (insights.topLocations.length > 0) {
+                <div class="card-paper p-6">
+                  <p class="text-ink-400 text-xs font-bold uppercase tracking-widest mb-3">{{ 'PAIN.TOP_LOCATIONS' | translate }}</p>
+                  <div class="flex flex-wrap gap-2">
+                    @for (loc of insights.topLocations; track loc.name) {
+                      <span class="px-4 py-1.5 bg-clay-50 text-clay-800 border border-clay-100 rounded-full font-bold text-xs">{{ loc.name }} · {{ loc.count }}×</span>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+
+            @if (painChart(); as chart) {
+              <div class="card-paper p-8 md:p-10">
+                <p class="text-ink-400 text-xs font-bold uppercase tracking-widest mb-6">{{ 'HISTORY.TREND' | translate }}</p>
+                <svg viewBox="0 0 100 32" preserveAspectRatio="none" class="w-full h-40">
+                  <polygon [attr.points]="chart.areaPoints" fill="var(--color-amber-100)" opacity="0.7"></polygon>
+                  <polyline [attr.points]="chart.points" fill="none" stroke="var(--color-amber-500)" stroke-width="1" vector-effect="non-scaling-stroke"></polyline>
+                </svg>
+                <div class="flex justify-between text-xs font-bold text-ink-400 uppercase tracking-wide mt-2">
+                  @for (l of chart.labels; track l.x) {
+                    <span>{{ l.label }}</span>
+                  }
+                </div>
+              </div>
+            }
+          }
+        }
+
+        <div class="space-y-5">
+          @for (entry of painEntries(); track entry.id) {
+            <div class="card-paper p-6 md:p-8">
+              <button (click)="togglePainEntry(entry.id)" class="w-full flex items-center justify-between gap-6 text-left">
+                <div class="space-y-1">
+                  <p class="text-ink-400 text-xs font-bold uppercase tracking-widest">{{ formatDate(entry.createdAt) }} · {{ formatTime(entry.createdAt) }}</p>
+                  <p class="text-lg font-serif font-bold text-ink-900">
+                    {{ 'PAIN.INTENSITY' | translate }} {{ entry.intensity }}/10
+                    @if (entry.bodyLocations.length > 0) { — {{ entry.bodyLocations.join(', ') }} }
+                  </p>
+                </div>
+                <svg class="w-6 h-6 text-ink-400 flex-shrink-0 transition-transform" [class.rotate-180]="expandedPainId() === entry.id" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+              </button>
+
+              @if (expandedPainId() === entry.id) {
+                <div class="mt-6 pt-6 border-t border-paper-200 grid grid-cols-1 md:grid-cols-2 gap-4 text-sm animate-fade-in">
+                  @if (entry.painType) { <p><span class="font-bold text-ink-600">{{ 'PAIN.TYPE' | translate }}:</span> {{ entry.painType }}</p> }
+                  @if (entry.medicationTaken) { <p><span class="font-bold text-ink-600">{{ 'PAIN.MEDICATION' | translate }}:</span> {{ entry.medicationTaken }}</p> }
+                  @if (entry.sleepQuality !== null) { <p><span class="font-bold text-ink-600">{{ 'PAIN.SLEEP' | translate }}:</span> {{ entry.sleepQuality }}/10</p> }
+                  @if (entry.notes) { <p class="md:col-span-2"><span class="font-bold text-ink-600">{{ 'PAIN.NOTES' | translate }}:</span> {{ entry.notes }}</p> }
+                </div>
+              }
+            </div>
+          } @empty {
+            <div class="card-paper p-14 text-center">
+              <p class="text-ink-500 font-medium text-lg">{{ 'HISTORY.EMPTY_PAIN' | translate }}</p>
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+  </div>
+</div>
