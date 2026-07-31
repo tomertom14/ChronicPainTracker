@@ -1,27 +1,27 @@
-<div class="min-h-screen bg-gradient-to-br from-emerald-100 via-teal-100 to-stone-100 flex flex-col items-center justify-center font-sans p-6 animate-fade-in relative">
-  
-  <div class="w-full max-w-md bg-white rounded-[2.5rem] p-10 shadow-[0_15px_40px_rgb(0,0,0,0.06)] border border-emerald-100 relative overflow-hidden text-center z-10">
-    
-    <div class="absolute top-0 right-0 -mr-16 -mt-16 w-48 h-48 rounded-full bg-emerald-100/70 blur-3xl -z-10"></div>
-    
+<div class="min-h-screen bg-gradient-to-br from-paper-100 via-amber-50 to-paper-200 flex flex-col items-center justify-center font-sans p-6 animate-fade-in relative">
+
+  <div class="w-full max-w-md bg-white rounded-[2.5rem] p-10 shadow-[0_15px_40px_rgb(43,33,26,0.08)] border border-paper-200 relative overflow-hidden text-center z-10">
+
+    <div class="absolute top-0 right-0 -mr-16 -mt-16 w-48 h-48 rounded-full bg-clay-100/70 blur-3xl -z-10"></div>
+
     @if (status() === 'loading') {
       <div class="flex flex-col items-center space-y-4">
-        <div class="w-16 h-16 border-4 border-emerald-100 border-t-emerald-500 rounded-full animate-spin mb-4"></div>
-        <h2 class="text-2xl font-extrabold text-emerald-950">{{ 'AUTH.VERIFY_EMAIL.LOADING_TITLE' | translate }}</h2>
-        <p class="text-emerald-900/70 font-medium">{{ 'AUTH.VERIFY_EMAIL.LOADING_SUBTITLE' | translate }}</p>
+        <div class="w-16 h-16 border-4 border-clay-100 border-t-clay-500 rounded-full animate-spin mb-4"></div>
+        <h2 class="text-2xl font-extrabold text-ink-900">{{ 'AUTH.VERIFY_EMAIL.LOADING_TITLE' | translate }}</h2>
+        <p class="text-ink-600/80 font-medium">{{ 'AUTH.VERIFY_EMAIL.LOADING_SUBTITLE' | translate }}</p>
       </div>
     }
 
     @else if (status() === 'success') {
       <div class="flex flex-col items-center space-y-5">
-        <div class="w-20 h-20 bg-emerald-100 text-emerald-500 rounded-full flex items-center justify-center mb-2">
+        <div class="w-20 h-20 bg-clay-100 text-clay-600 rounded-full flex items-center justify-center mb-2">
           <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
           </svg>
         </div>
-        <h2 class="text-3xl font-extrabold text-emerald-950 tracking-tight">{{ 'AUTH.VERIFY_EMAIL.SUCCESS_TITLE' | translate }}</h2>
-        <p class="text-emerald-900/70 font-medium pb-4">{{ 'AUTH.VERIFY_EMAIL.SUCCESS_SUBTITLE' | translate }}</p>
-        <button (click)="goToLogin()" class="w-full px-8 py-4 text-lg font-bold text-white transition-all duration-300 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-2xl hover:from-emerald-600 hover:to-teal-600 shadow-lg shadow-emerald-500/30 hover:-translate-y-0.5">
+        <h2 class="text-3xl font-extrabold text-ink-900 tracking-tight">{{ 'AUTH.VERIFY_EMAIL.SUCCESS_TITLE' | translate }}</h2>
+        <p class="text-ink-600/80 font-medium pb-4">{{ 'AUTH.VERIFY_EMAIL.SUCCESS_SUBTITLE' | translate }}</p>
+        <button (click)="goToLogin()" class="w-full px-8 py-4 text-lg font-bold text-white transition-all duration-300 bg-gradient-to-r from-clay-500 to-amber-500 rounded-2xl hover:from-clay-600 hover:to-amber-600 shadow-lg shadow-clay-500/30 hover:-translate-y-0.5">
           {{ 'AUTH.VERIFY_EMAIL.GO_TO_LOGIN' | translate }}
         </button>
       </div>
@@ -36,7 +36,7 @@
         </div>
         <h2 class="text-3xl font-extrabold text-red-950 tracking-tight">{{ 'AUTH.VERIFY_EMAIL.ERROR_TITLE' | translate }}</h2>
         <p class="text-red-800/80 font-medium pb-4">{{ errorMessage() }}</p>
-        <button (click)="goToLogin()" class="w-full px-8 py-4 text-lg font-bold text-emerald-900 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 transition-all duration-300 rounded-2xl">
+        <button (click)="goToLogin()" class="w-full px-8 py-4 text-lg font-bold text-clay-800 bg-clay-50 border border-clay-200 hover:bg-clay-100 transition-all duration-300 rounded-2xl">
           {{ 'AUTH.VERIFY_EMAIL.BACK_TO_LOGIN' | translate }}
         </button>
       </div>

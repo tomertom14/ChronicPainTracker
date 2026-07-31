@@ -1,54 +1,54 @@
-<div class="min-h-screen bg-sage-50 flex items-center justify-center font-sans selection:bg-emerald-200/60 overflow-x-hidden">
-  
-  <div class="w-full h-screen md:h-auto md:max-w-6xl bg-white md:shadow-[0_40px_100px_rgb(0,0,0,0.04)] border border-sage-100 md:rounded-[3rem] flex flex-col relative overflow-hidden transition-all duration-700">
-    
+<div class="min-h-screen bg-paper-100 flex items-center justify-center font-sans selection:bg-clay-200/60 overflow-x-hidden">
+
+  <div class="w-full h-screen md:h-auto md:max-w-6xl bg-white md:shadow-[0_40px_100px_rgb(43,33,26,0.08)] border border-paper-200 md:rounded-[3rem] flex flex-col relative overflow-hidden transition-all duration-700">
+
     <!-- Progress Header -->
-    <div class="sticky top-0 z-30 w-full bg-white/80 backdrop-blur-md border-b border-sage-100">
-      <div class="h-1.5 w-full bg-sage-100">
-        <div class="h-1.5 bg-emerald-800 transition-all duration-700 ease-in-out" 
+    <div class="sticky top-0 z-30 w-full bg-white/80 backdrop-blur-md border-b border-paper-200">
+      <div class="h-1.5 w-full bg-paper-200">
+        <div class="h-1.5 bg-clay-500 transition-all duration-700 ease-in-out"
              [style.width.%]="progressWidth()"></div>
       </div>
       <div class="px-8 md:px-12 py-6 flex justify-between items-center">
         <div class="flex items-center gap-3">
-            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span class="text-xs md:text-sm font-bold text-sage-400 uppercase tracking-[0.2em]">{{ 'PRACTICE.STEP_OF' | translate:{current: currentStep()} }}</span>
+            <span class="w-2 h-2 rounded-full bg-clay-500 animate-pulse"></span>
+            <span class="text-xs md:text-sm font-bold text-ink-400 uppercase tracking-[0.2em]">{{ 'PRACTICE.STEP_OF' | translate:{current: currentStep()} }}</span>
         </div>
-        <button (click)="cancelPractice()" class="text-sm font-bold text-sage-400 hover:text-red-500 transition-colors uppercase tracking-widest">{{ 'PRACTICE.CLOSE' | translate }}</button>
+        <button (click)="cancelPractice()" class="text-sm font-bold text-ink-400 hover:text-red-500 transition-colors uppercase tracking-widest">{{ 'PRACTICE.CLOSE' | translate }}</button>
       </div>
     </div>
 
     <!-- Main Content Area -->
     <div class="flex-1 overflow-y-auto p-8 md:p-16 lg:px-24 pb-40 md:pb-48">
-      
+
       <!-- Step 1: Emotion Selection -->
       @if (currentStep() === 1) {
         <div class="animate-fade-in max-w-4xl mx-auto space-y-12">
           <div class="text-center md:text-left space-y-4">
-            <h1 class="text-5xl md:text-6xl font-serif font-bold text-emerald-950 tracking-tight leading-tight">{{ 'PRACTICE.HOW_FEELING' | translate }}</h1>
-            <p class="text-xl text-sage-600 font-medium max-w-2xl">{{ 'PRACTICE.MOVE_SLIDER' | translate }}</p>
+            <h1 class="text-5xl md:text-6xl font-serif font-bold text-ink-900 tracking-tight leading-tight">{{ 'PRACTICE.HOW_FEELING' | translate }}</h1>
+            <p class="text-xl text-ink-500 font-medium max-w-2xl">{{ 'PRACTICE.MOVE_SLIDER' | translate }}</p>
           </div>
 
-          <div class="flex flex-col md:flex-row gap-4 p-4 bg-sage-50 rounded-[2rem] border border-sage-100 shadow-sm focus-within:ring-2 focus-within:ring-emerald-200 transition-all">
+          <div class="flex flex-col md:flex-row gap-4 p-4 bg-paper-100 rounded-[2rem] border border-paper-200 shadow-sm focus-within:ring-2 focus-within:ring-clay-200 transition-all">
             <input type="text" [ngModel]="newEmotion()" (ngModelChange)="newEmotion.set($event)" [placeholder]="'PRACTICE.ADD_CUSTOM' | translate"
-                   class="flex-1 px-6 py-5 text-lg bg-transparent border-none outline-none placeholder:text-sage-300 text-emerald-950 font-medium">
-            <button (click)="addCustomEmotion()" class="px-10 py-5 bg-emerald-900 text-white font-bold rounded-2xl hover:bg-emerald-950 active:scale-95 transition-all shadow-lg shadow-emerald-900/20">{{ 'PRACTICE.ADD_BTN' | translate }}</button>
+                   class="flex-1 px-6 py-5 text-lg bg-transparent border-none outline-none placeholder:text-ink-300 text-ink-900 font-medium">
+            <button (click)="addCustomEmotion()" class="px-10 py-5 bg-clay-500 text-white font-bold rounded-2xl hover:bg-clay-600 active:scale-95 transition-all shadow-lg shadow-clay-900/20">{{ 'PRACTICE.ADD_BTN' | translate }}</button>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             @for (item of emotionsList(); track item.name) {
               <div class="p-8 rounded-[2.5rem] border transition-all duration-500 group"
-                   [ngClass]="item.intensity > 0 ? 'bg-emerald-950 border-emerald-900 shadow-2xl scale-[1.02]' : 'bg-white border-sage-100 shadow-sm hover:border-sage-200'">
+                   [ngClass]="item.intensity > 0 ? 'bg-ink-900 border-ink-800 shadow-2xl scale-[1.02]' : 'bg-white border-paper-200 shadow-sm hover:border-paper-300'">
                 <div class="flex justify-between items-center mb-8">
-                  <span class="text-2xl font-serif font-bold transition-colors" [ngClass]="item.intensity > 0 ? 'text-white' : 'text-emerald-950'">{{ getEmotionName(item.name) }}</span>
-                  
+                  <span class="text-2xl font-serif font-bold transition-colors" [ngClass]="item.intensity > 0 ? 'text-white' : 'text-ink-900'">{{ getEmotionName(item.name) }}</span>
+
                   @if (item.intensity > 0) {
-                    <span class="text-sm font-bold text-emerald-950 bg-sand-200 px-4 py-1.5 rounded-full shadow-sm">{{ item.intensity }} / 10</span>
+                    <span class="text-sm font-bold text-ink-900 bg-amber-200 px-4 py-1.5 rounded-full shadow-sm">{{ item.intensity }} / 10</span>
                   }
                 </div>
                 <div class="relative flex items-center h-6">
-                    <input type="range" min="0" max="10" [(ngModel)]="item.intensity" 
-                           class="w-full h-1 bg-sage-100 rounded-full appearance-none cursor-pointer accent-emerald-500 hover:accent-emerald-400 transition-all"
-                           [ngClass]="{'bg-emerald-800': item.intensity > 0}">
+                    <input type="range" min="0" max="10" [(ngModel)]="item.intensity"
+                           class="w-full h-1 bg-paper-200 rounded-full appearance-none cursor-pointer accent-clay-500 hover:accent-clay-400 transition-all"
+                           [ngClass]="{'bg-clay-800': item.intensity > 0}">
                 </div>
               </div>
             }
@@ -60,43 +60,43 @@
       @if (currentStep() === 2) {
         <div class="animate-fade-in max-w-5xl mx-auto space-y-16">
           <div class="text-center md:text-left space-y-4">
-            <h1 class="text-5xl md:text-6xl font-serif font-bold text-emerald-950 tracking-tight leading-tight">{{ 'PRACTICE.DEEP_DIVE' | translate }}</h1>
-            <p class="text-xl text-sage-600 font-medium max-w-2xl">{{ 'PRACTICE.REFLECT' | translate }}</p>
+            <h1 class="text-5xl md:text-6xl font-serif font-bold text-ink-900 tracking-tight leading-tight">{{ 'PRACTICE.DEEP_DIVE' | translate }}</h1>
+            <p class="text-xl text-ink-500 font-medium max-w-2xl">{{ 'PRACTICE.REFLECT' | translate }}</p>
           </div>
 
-          <div class="space-y-16"> 
+          <div class="space-y-16">
             @for (detail of emotionDetails(); track detail.emotion.name; let i = $index) {
-              <div class="bg-white rounded-[3rem] p-10 md:p-14 border border-sage-100 shadow-[0_30px_80px_rgb(0,0,0,0.03)] relative overflow-hidden group">
-                <div class="absolute top-0 right-0 w-48 h-48 bg-emerald-50/50 rounded-full -mr-24 -mt-24 blur-3xl group-hover:bg-emerald-100/50 transition-colors duration-500"></div>
+              <div class="bg-white rounded-[3rem] p-10 md:p-14 border border-paper-200 shadow-[0_30px_80px_rgb(43,33,26,0.05)] relative overflow-hidden group">
+                <div class="absolute top-0 right-0 w-48 h-48 bg-clay-50/60 rounded-full -mr-24 -mt-24 blur-3xl group-hover:bg-clay-100/60 transition-colors duration-500"></div>
 
-                <div class="flex items-center gap-6 mb-12 pb-8 border-b border-sage-50">
-                  <div class="w-16 h-16 rounded-2xl bg-emerald-900 flex items-center justify-center text-white font-serif font-bold text-2xl shadow-xl shadow-emerald-900/20">{{ i + 1 }}</div>
+                <div class="flex items-center gap-6 mb-12 pb-8 border-b border-paper-100">
+                  <div class="w-16 h-16 rounded-2xl bg-ink-900 flex items-center justify-center text-white font-serif font-bold text-2xl shadow-xl shadow-ink-900/20">{{ i + 1 }}</div>
                   <div class="space-y-1">
-                    <h2 class="text-4xl font-serif font-bold text-emerald-950">{{ getEmotionName(detail.emotion.name) }}</h2>
-                    <p class="text-sage-400 font-bold text-xs uppercase tracking-widest">{{ 'PRACTICE.INTENSITY' | translate }}: {{ detail.emotion.intensity }} / 10</p>
+                    <h2 class="text-4xl font-serif font-bold text-ink-900">{{ getEmotionName(detail.emotion.name) }}</h2>
+                    <p class="text-ink-400 font-bold text-xs uppercase tracking-widest">{{ 'PRACTICE.INTENSITY' | translate }}: {{ detail.emotion.intensity }} / 10</p>
                   </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
                   <div class="space-y-3">
-                    <label class="block text-sm font-bold text-emerald-950 tracking-wide uppercase">{{ 'PRACTICE.Q1' | translate }}</label>
-                    <textarea rows="3" [(ngModel)]="detail.answers.when" class="w-full px-6 py-5 text-lg bg-sage-50/50 border border-sage-100 rounded-3xl outline-none focus:ring-4 focus:ring-emerald-500/10 focus:bg-white focus:border-emerald-500 resize-none transition-all text-emerald-950 placeholder:text-sage-200"></textarea>
+                    <label class="block text-sm font-bold text-ink-900 tracking-wide uppercase">{{ 'PRACTICE.Q1' | translate }}</label>
+                    <textarea rows="3" [(ngModel)]="detail.answers.when" class="w-full px-6 py-5 text-lg bg-paper-50 border border-paper-200 rounded-3xl outline-none focus:ring-4 focus:ring-clay-500/10 focus:bg-white focus:border-clay-400 resize-none transition-all text-ink-900 placeholder:text-ink-200"></textarea>
                   </div>
                   <div class="space-y-3">
-                    <label class="block text-sm font-bold text-emerald-950 tracking-wide uppercase">{{ 'PRACTICE.Q2' | translate }}</label>
-                    <textarea rows="3" [(ngModel)]="detail.answers.whoWhat" class="w-full px-6 py-5 text-lg bg-sage-50/50 border border-sage-100 rounded-3xl outline-none focus:ring-4 focus:ring-emerald-500/10 focus:bg-white focus:border-emerald-500 resize-none transition-all text-emerald-950 placeholder:text-sage-200"></textarea>
+                    <label class="block text-sm font-bold text-ink-900 tracking-wide uppercase">{{ 'PRACTICE.Q2' | translate }}</label>
+                    <textarea rows="3" [(ngModel)]="detail.answers.whoWhat" class="w-full px-6 py-5 text-lg bg-paper-50 border border-paper-200 rounded-3xl outline-none focus:ring-4 focus:ring-clay-500/10 focus:bg-white focus:border-clay-400 resize-none transition-all text-ink-900 placeholder:text-ink-200"></textarea>
                   </div>
                   <div class="space-y-3">
-                    <label class="block text-sm font-bold text-emerald-950 tracking-wide uppercase">{{ 'PRACTICE.Q3' | translate }}</label>
-                    <textarea rows="3" [(ngModel)]="detail.answers.whereInBody" class="w-full px-6 py-5 text-lg bg-sage-50/50 border border-sage-100 rounded-3xl outline-none focus:ring-4 focus:ring-emerald-500/10 focus:bg-white focus:border-emerald-500 resize-none transition-all text-emerald-950 placeholder:text-sage-200"></textarea>
+                    <label class="block text-sm font-bold text-ink-900 tracking-wide uppercase">{{ 'PRACTICE.Q3' | translate }}</label>
+                    <textarea rows="3" [(ngModel)]="detail.answers.whereInBody" class="w-full px-6 py-5 text-lg bg-paper-50 border border-paper-200 rounded-3xl outline-none focus:ring-4 focus:ring-clay-500/10 focus:bg-white focus:border-clay-400 resize-none transition-all text-ink-900 placeholder:text-ink-200"></textarea>
                   </div>
                   <div class="space-y-3">
-                    <label class="block text-sm font-bold text-emerald-950 tracking-wide uppercase">{{ 'PRACTICE.Q4' | translate }}</label>
-                    <textarea rows="3" [(ngModel)]="detail.answers.physicalSensation" class="w-full px-6 py-5 text-lg bg-sage-50/50 border border-sage-100 rounded-3xl outline-none focus:ring-4 focus:ring-emerald-500/10 focus:bg-white focus:border-emerald-500 resize-none transition-all text-emerald-950 placeholder:text-sage-200"></textarea>
+                    <label class="block text-sm font-bold text-ink-900 tracking-wide uppercase">{{ 'PRACTICE.Q4' | translate }}</label>
+                    <textarea rows="3" [(ngModel)]="detail.answers.physicalSensation" class="w-full px-6 py-5 text-lg bg-paper-50 border border-paper-200 rounded-3xl outline-none focus:ring-4 focus:ring-clay-500/10 focus:bg-white focus:border-clay-400 resize-none transition-all text-ink-900 placeholder:text-ink-200"></textarea>
                   </div>
                   <div class="col-span-1 md:col-span-2 space-y-3">
-                    <label class="block text-sm font-bold text-emerald-950 tracking-wide uppercase">{{ 'PRACTICE.Q5' | translate }}</label>
-                    <textarea rows="3" [(ngModel)]="detail.answers.duration" class="w-full px-6 py-5 text-lg bg-sage-50/50 border border-sage-100 rounded-3xl outline-none focus:ring-4 focus:ring-emerald-500/10 focus:bg-white focus:border-emerald-500 resize-none transition-all text-emerald-950 placeholder:text-sage-200"></textarea>
+                    <label class="block text-sm font-bold text-ink-900 tracking-wide uppercase">{{ 'PRACTICE.Q5' | translate }}</label>
+                    <textarea rows="3" [(ngModel)]="detail.answers.duration" class="w-full px-6 py-5 text-lg bg-paper-50 border border-paper-200 rounded-3xl outline-none focus:ring-4 focus:ring-clay-500/10 focus:bg-white focus:border-clay-400 resize-none transition-all text-ink-900 placeholder:text-ink-200"></textarea>
                   </div>
                 </div>
               </div>
@@ -109,19 +109,19 @@
       @if (currentStep() === 3) {
         <div class="animate-fade-in flex flex-col items-center justify-center text-center py-12 md:py-20 max-w-2xl mx-auto space-y-16">
           <div class="relative">
-            <div class="absolute inset-0 bg-emerald-100 rounded-full blur-3xl opacity-50 animate-pulse"></div>
-            <div class="relative w-48 h-48 bg-white rounded-full flex items-center justify-center shadow-2xl border border-sage-50 overflow-hidden">
-                <div class="absolute bottom-0 w-full bg-emerald-50/50 h-1/2 animate-wave"></div>
-                <svg class="w-24 h-24 text-emerald-700 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <div class="absolute inset-0 bg-clay-100 rounded-full blur-3xl opacity-50 animate-pulse"></div>
+            <div class="relative w-48 h-48 bg-white rounded-full flex items-center justify-center shadow-2xl border border-paper-100 overflow-hidden">
+                <div class="absolute bottom-0 w-full bg-clay-50/60 h-1/2 animate-wave"></div>
+                <svg class="w-24 h-24 text-clay-700 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
             </div>
           </div>
-          
+
           <div class="space-y-8">
-            <h1 class="text-5xl md:text-7xl font-serif font-bold text-emerald-950 tracking-tight leading-tight">{{ 'PRACTICE.CLEANSING_SHOWER' | translate }}</h1>
-            <p class="text-2xl text-sage-600 leading-relaxed font-medium max-w-lg mx-auto italic">{{ 'PRACTICE.IMAGINE' | translate }}</p>
+            <h1 class="text-5xl md:text-7xl font-serif font-bold text-ink-900 tracking-tight leading-tight">{{ 'PRACTICE.CLEANSING_SHOWER' | translate }}</h1>
+            <p class="text-2xl text-ink-500 leading-relaxed font-medium max-w-lg mx-auto italic">{{ 'PRACTICE.IMAGINE' | translate }}</p>
           </div>
-          
-          <div class="px-10 py-4 bg-sand-100 text-sand-800 font-bold tracking-[0.3em] uppercase rounded-full border border-sand-200 shadow-sm text-sm">
+
+          <div class="px-10 py-4 bg-amber-100 text-amber-800 font-bold tracking-[0.3em] uppercase rounded-full border border-amber-200 shadow-sm text-sm">
             {{ 'PRACTICE.READY' | translate }}
           </div>
         </div>
@@ -130,20 +130,20 @@
     </div>
 
     <!-- Persistent Bottom Actions -->
-    <div class="fixed md:absolute bottom-0 left-0 w-full bg-white/90 backdrop-blur-md border-t border-sage-100 p-6 md:px-16 md:py-10 z-40 shadow-[0_-20px_50px_rgb(0,0,0,0.02)]">
+    <div class="fixed md:absolute bottom-0 left-0 w-full bg-white/90 backdrop-blur-md border-t border-paper-200 p-6 md:px-16 md:py-10 z-40 shadow-[0_-20px_50px_rgb(43,33,26,0.04)]">
       <div class="max-w-5xl mx-auto flex justify-between items-center gap-8">
-        
+
         @if (currentStep() > 1) {
-          <button (click)="prevStep()" class="flex-1 md:flex-none md:w-44 py-5 text-base font-bold text-sage-500 hover:text-emerald-900 transition-all uppercase tracking-widest">{{ 'PRACTICE.BACK' | translate }}</button>
+          <button (click)="prevStep()" class="flex-1 md:flex-none md:w-44 py-5 text-base font-bold text-ink-500 hover:text-clay-700 transition-all uppercase tracking-widest">{{ 'PRACTICE.BACK' | translate }}</button>
         }
-        
+
         @if (currentStep() === 1) {
           <div class="hidden md:block flex-1"></div>
         }
-        
-        <button (click)="nextStep()" 
+
+        <button (click)="nextStep()"
                 [disabled]="isSaving()"
-                class="group flex-1 md:flex-none md:w-72 py-5 text-xl font-bold text-white bg-emerald-900 rounded-[1.5rem] hover:bg-emerald-950 active:scale-95 shadow-2xl shadow-emerald-900/20 hover:shadow-emerald-900/30 flex justify-center items-center transition-all disabled:opacity-30 disabled:cursor-not-allowed disabled:scale-100">
+                class="group flex-1 md:flex-none md:w-72 py-5 text-xl font-bold text-white bg-clay-500 rounded-[1.5rem] hover:bg-clay-600 active:scale-95 shadow-2xl shadow-clay-900/20 hover:shadow-clay-900/30 flex justify-center items-center transition-all disabled:opacity-30 disabled:cursor-not-allowed disabled:scale-100">
           <span>{{ currentStep() === 3 ? ('PRACTICE.FINISH' | translate) : ('PRACTICE.CONTINUE' | translate) }}</span>
           @if (currentStep() < 3) {
             <svg class="w-6 h-6 ml-3 transition-transform group-hover:translate-x-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
@@ -154,19 +154,19 @@
 
     <!-- Fullscreen Release Animation -->
     @if (isReleasing()) {
-      <div class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-emerald-950 transition-all duration-1000 animate-fade-in">
+      <div class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-ink-900 transition-all duration-1000 animate-fade-in">
         <div class="relative flex items-center justify-center mb-16">
-          <div class="absolute w-[30rem] h-[30rem] bg-emerald-500/10 rounded-full animate-ping" style="animation-duration: 4s;"></div>
-          <div class="absolute w-[20rem] h-[20rem] bg-emerald-400/5 rounded-full animate-pulse" style="animation-duration: 3s;"></div>
-          <div class="relative z-10 w-32 h-32 bg-emerald-900 rounded-full flex items-center justify-center shadow-[0_0_80px_rgba(16,185,129,0.3)] border border-emerald-800">
-            <svg class="w-14 h-14 text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="absolute w-[30rem] h-[30rem] bg-clay-500/10 rounded-full animate-ping" style="animation-duration: 4s;"></div>
+          <div class="absolute w-[20rem] h-[20rem] bg-amber-400/10 rounded-full animate-pulse" style="animation-duration: 3s;"></div>
+          <div class="relative z-10 w-32 h-32 bg-clay-800 rounded-full flex items-center justify-center shadow-[0_0_80px_rgba(232,163,61,0.3)] border border-clay-700">
+            <svg class="w-14 h-14 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
             </svg>
           </div>
         </div>
         <div class="text-center space-y-6 max-w-2xl px-8">
           <h2 class="text-6xl md:text-8xl font-serif font-bold text-white tracking-tighter animate-fade-in">{{ 'PRACTICE.LETTING_GO' | translate }}</h2>
-          <p class="text-emerald-400/60 text-xl font-bold tracking-[0.4em] uppercase">{{ 'PRACTICE.RELEASED' | translate }}</p>
+          <p class="text-amber-300/70 text-xl font-bold tracking-[0.4em] uppercase">{{ 'PRACTICE.RELEASED' | translate }}</p>
         </div>
       </div>
     }
