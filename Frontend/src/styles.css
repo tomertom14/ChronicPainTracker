@@ -5,6 +5,8 @@
 @theme {
   --font-sans: "Inter", "ui-sans-serif", "system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "Helvetica Neue", "Arial", "sans-serif";
   --font-serif: "Fraunces", "ui-serif", "Georgia", "Cambria", "Times New Roman", "Times", "serif";
+  /* Script - marginal, handwritten-style annotations only. Used sparingly. */
+  --font-script: "Caveat", "Segoe Script", cursive;
 
   /* Clay - primary terracotta, used for CTAs, links, active states */
   --color-clay-50: #fdf3ee;
@@ -99,6 +101,27 @@
   width: 200%;
 }
 
+/* Signature ambient motion for the ink-blot mark: a slow, near-imperceptible
+   breath. Never draws the eye on its own, only rewards someone who lingers. */
+@keyframes breathe {
+  0%, 100% { transform: scale(1); opacity: 0.55; }
+  50% { transform: scale(1.06); opacity: 0.8; }
+}
+
+.animate-breathe {
+  animation: breathe 9s ease-in-out infinite;
+  transform-origin: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 /* Warm Journal shared primitives */
 @layer components {
   .card-paper {
@@ -106,11 +129,16 @@
   }
 
   .btn-primary {
-    @apply inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-white bg-clay-500 hover:bg-clay-600 rounded-2xl shadow-xl shadow-clay-900/15 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none;
+    @apply inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-white bg-clay-500 hover:bg-clay-600 rounded-2xl shadow-xl shadow-clay-900/15 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-clay-300;
   }
 
   .btn-secondary {
-    @apply inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-clay-800 bg-amber-100 hover:bg-amber-200 rounded-2xl shadow-md hover:shadow-lg transition-all duration-300;
+    @apply inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-clay-800 bg-amber-100 hover:bg-amber-200 rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-amber-300;
+  }
+
+  .annotation {
+    font-family: var(--font-script);
+    @apply text-clay-600;
   }
 
   .input-warm {

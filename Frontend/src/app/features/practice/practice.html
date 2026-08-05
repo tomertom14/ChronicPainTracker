@@ -67,7 +67,9 @@
           <div class="space-y-16">
             @for (detail of emotionDetails(); track detail.emotion.name; let i = $index) {
               <div class="bg-white rounded-[3rem] p-10 md:p-14 border border-paper-200 shadow-[0_30px_80px_rgb(43,33,26,0.05)] relative overflow-hidden group">
-                <div class="absolute top-0 right-0 w-48 h-48 bg-clay-50/60 rounded-full -mr-24 -mt-24 blur-3xl group-hover:bg-clay-100/60 transition-colors duration-500"></div>
+                <div class="absolute top-0 right-0 w-48 h-48 text-clay-100 opacity-80 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
+                  <app-ink-blot [blotId]="'practice-emotion-' + i" [delay]="(i * -3) + 's'"></app-ink-blot>
+                </div>
 
                 <div class="flex items-center gap-6 mb-12 pb-8 border-b border-paper-100">
                   <div class="w-16 h-16 rounded-2xl bg-ink-900 flex items-center justify-center text-white font-serif font-bold text-2xl shadow-xl shadow-ink-900/20">{{ i + 1 }}</div>
@@ -109,7 +111,7 @@
       @if (currentStep() === 3) {
         <div class="animate-fade-in flex flex-col items-center justify-center text-center py-12 md:py-20 max-w-2xl mx-auto space-y-16">
           <div class="relative">
-            <div class="absolute inset-0 bg-clay-100 rounded-full blur-3xl opacity-50 animate-pulse"></div>
+            <div class="absolute inset-0 bg-clay-100 rounded-full blur-3xl opacity-50 animate-breathe"></div>
             <div class="relative w-48 h-48 bg-white rounded-full flex items-center justify-center shadow-2xl border border-paper-100 overflow-hidden">
                 <div class="absolute bottom-0 w-full bg-clay-50/60 h-1/2 animate-wave"></div>
                 <svg class="w-24 h-24 text-clay-700 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>

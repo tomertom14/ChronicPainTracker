@@ -2,7 +2,9 @@
 
   <div class="w-full max-w-md bg-white rounded-[2.5rem] p-10 shadow-[0_15px_40px_rgb(43,33,26,0.08)] border border-paper-200 relative overflow-hidden text-center z-10">
 
-    <div class="absolute top-0 right-0 -mr-16 -mt-16 w-48 h-48 rounded-full bg-clay-100/70 blur-3xl -z-10"></div>
+    <div class="absolute top-0 right-0 -mr-16 -mt-16 w-48 h-48 text-clay-300 opacity-40 -z-10 pointer-events-none">
+      <app-ink-blot blotId="verify-email"></app-ink-blot>
+    </div>
 
     @if (status() === 'loading') {
       <div class="flex flex-col items-center space-y-4">

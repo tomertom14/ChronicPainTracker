@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { InkBlotComponent } from '../../shared/ink-blot/ink-blot';
 
 interface EmotionRate {
   name: string;
@@ -27,7 +28,7 @@ interface EmotionDetail {
 @Component({
   selector: 'app-practice',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslateModule],
+  imports: [CommonModule, FormsModule, TranslateModule, InkBlotComponent],
   templateUrl: './practice.html',
   styleUrls: ['./practice.css']
 })

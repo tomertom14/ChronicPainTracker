@@ -3,11 +3,12 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { Router, RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from '../../../core/auth/auth.service';
+import { InkBlotComponent } from '../../../shared/ink-blot/ink-blot';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterModule, TranslateModule],
+  imports: [ReactiveFormsModule, RouterModule, TranslateModule, InkBlotComponent],
   templateUrl: './register.html'
 })
 export class RegisterComponent {

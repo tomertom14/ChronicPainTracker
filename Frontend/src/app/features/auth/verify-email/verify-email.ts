@@ -2,11 +2,12 @@ import { Component, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from '../../../core/auth/auth.service';
+import { InkBlotComponent } from '../../../shared/ink-blot/ink-blot';
 
 @Component({
   selector: 'app-verify-email',
   standalone: true,
-  imports: [TranslateModule],
+  imports: [TranslateModule, InkBlotComponent],
   templateUrl: './verify-email.html'
 })
 export class VerifyEmailComponent implements OnInit {

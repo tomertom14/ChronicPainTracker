@@ -5,13 +5,14 @@ import { Router, RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from '../../../core/auth/auth.service';
 import { environment } from '../../../../environments/environment'
+import { InkBlotComponent } from '../../../shared/ink-blot/ink-blot';
 
 declare var google: any;
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterModule, TranslateModule],
+  imports: [ReactiveFormsModule, RouterModule, TranslateModule, InkBlotComponent],
   templateUrl: './login.html'
 })
 export class LoginComponent implements AfterViewInit {

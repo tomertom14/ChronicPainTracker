@@ -7,12 +7,13 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../../core/auth/auth.service';
 import { PracticeService } from '../../core/services/practice.service';
 import { ReminderService } from '../../core/services/reminder.service';
+import { InkBlotComponent } from '../../shared/ink-blot/ink-blot';
 import { DAILY_PROMPTS } from './prompts.data';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, TranslateModule],
+  imports: [CommonModule, FormsModule, RouterLink, TranslateModule, InkBlotComponent],
   templateUrl: './dashboard.html'
 })
 export class DashboardComponent implements OnInit {
